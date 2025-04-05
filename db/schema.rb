@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_05_182653) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_05_183059) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.string "description"
@@ -25,6 +25,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_182653) do
     t.string "phone_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "order_details", force: :cascade do |t|
+    t.integer "quantity"
+    t.decimal "price_at_purchase"
+    t.integer "order_id", null: false
+    t.integer "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_details_on_order_id"
+    t.index ["product_id"], name: "index_order_details_on_product_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -55,6 +66,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_05_182653) do
     t.index ["category_id"], name: "index_products_on_category_id"
   end
 
+  add_foreign_key "order_details", "orders"
+  add_foreign_key "order_details", "products"
   add_foreign_key "orders", "customers"
   add_foreign_key "product_images", "products"
   add_foreign_key "products", "categories"
