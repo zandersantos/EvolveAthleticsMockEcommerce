@@ -4,6 +4,9 @@ This Project will be used for the E-Commerce Project in the Fullstack Web Develo
 Author: Zander Santos
 "Evolve Athletics" Fitness Equipment & Accessories Mock eCommerce Store
 
+API's USED:
+- https://wger.de/api/v2/equipment/
+
 User:
   - A user will be able to navigate through available products by way of a front page and by category.
   - A user will be able to add various products to a shopping cart saved in a session, edit quantity of items in the shopping cart, and remove items from the cart.
