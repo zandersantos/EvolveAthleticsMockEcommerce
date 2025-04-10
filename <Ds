@@ -1,0 +1,71 @@
+=> 
+[[32m#<Product:0x00007fb52c10cc08[0m
+  id: [34m[1m11[0m,
+  name: [31m[1m"[0m[31mBarbell[0m[31m[1m"[0m,
+  description:
+   [31m[1m"[0m[31mA versatile weightlifting bar ideal for strength t...[0m[31m[1m"[0m,
+  price: [35m[1m0.8e2[0m,
+  stockquantity: [34m[1m30[0m,
+  category_id: [34m[1m1[0m,
+  created_at: [31m[1m"[0m[31m2025-04-10 18:53:56.677107000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-04-10 18:53:56.677107000 +0000[0m[31m[1m"[0m[32m>[0m,
+ [32m#<Product:0x00007fb52c1237a0[0m
+  id: [34m[1m12[0m,
+  name: [31m[1m"[0m[31mBench[0m[31m[1m"[0m,
+  description:
+   [31m[1m"[0m[31mA flat workout bench perfect for presses, step-ups...[0m[31m[1m"[0m,
+  price: [35m[1m0.1e3[0m,
+  stockquantity: [34m[1m24[0m,
+  category_id: [34m[1m1[0m,
+  created_at: [31m[1m"[0m[31m2025-04-10 18:53:56.688391000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-04-10 18:53:56.688391000 +0000[0m[31m[1m"[0m[32m>[0m,
+ [32m#<Product:0x00007fb52d492bd8[0m
+  id: [34m[1m13[0m,
+  name: [31m[1m"[0m[31mAdjustable Dumbbell[0m[31m[1m"[0m,
+  description:
+   [31m[1m"[0m[31mA space-saving weight system with adjustable plate...[0m[31m[1m"[0m,
+  price: [35m[1m0.16e3[0m,
+  stockquantity: [34m[1m24[0m,
+  category_id: [34m[1m1[0m,
+  created_at: [31m[1m"[0m[31m2025-04-10 18:53:56.699092000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-04-10 18:53:56.699092000 +0000[0m[31m[1m"[0m[32m>[0m,
+ [32m#<Product:0x00007fb52d492958[0m
+  id: [34m[1m15[0m,
+  name: [31m[1m"[0m[31mIncline bench[0m[31m[1m"[0m,
+  description:
+   [31m[1m"[0m[31mAn angled workout bench built to target upper musc...[0m[31m[1m"[0m,
+  price: [35m[1m0.14e3[0m,
+  stockquantity: [34m[1m20[0m,
+  category_id: [34m[1m1[0m,
+  created_at: [31m[1m"[0m[31m2025-04-10 18:53:56.723839000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-04-10 18:53:56.723839000 +0000[0m[31m[1m"[0m[32m>[0m,
+ [32m#<Product:0x00007fb52d492818[0m
+  id: [34m[1m16[0m,
+  name: [31m[1m"[0m[31mAdjustable Kettlebell[0m[31m[1m"[0m,
+  description:
+   [31m[1m"[0m[31mA space-saving kettlebell with adjustable weight p...[0m[31m[1m"[0m,
+  price: [35m[1m0.12e3[0m,
+  stockquantity: [34m[1m24[0m,
+  category_id: [34m[1m1[0m,
+  created_at: [31m[1m"[0m[31m2025-04-10 18:53:56.739812000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-04-10 18:53:56.739812000 +0000[0m[31m[1m"[0m[32m>[0m,
+ [32m#<Product:0x00007fb52d492598[0m
+  id: [34m[1m17[0m,
+  name: [31m[1m"[0m[31mPull-up bar[0m[31m[1m"[0m,
+  description:
+   [31m[1m"[0m[31mA durable overhead bar for bodyweight exercises th...[0m[31m[1m"[0m,
+  price: [35m[1m0.4e2[0m,
+  stockquantity: [34m[1m30[0m,
+  category_id: [34m[1m1[0m,
+  created_at: [31m[1m"[0m[31m2025-04-10 18:53:56.763461000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-04-10 18:53:56.763461000 +0000[0m[31m[1m"[0m[32m>[0m,
+ [32m#<Product:0x00007fb52d492318[0m
+  id: [34m[1m18[0m,
+  name: [31m[1m"[0m[31mSZ-Bar[0m[31m[1m"[0m,
+  description:
+   [31m[1m"[0m[31mA curved weight bar designed to reduce joint strai...[0m[31m[1m"[0m,
+  price: [35m[1m0.5e2[0m,
+  stockquantity: [34m[1m20[0m,
+  category_id: [34m[1m1[0m,
+  created_at: [31m[1m"[0m[31m2025-04-10 18:53:56.787141000 +0000[0m[31m[1m"[0m,
+  updated_at: [31m[1m"[0m[31m2025-04-10 18:53:56.787141000 +0000[0m[31m[1m"[0m[32m>[0m]
