@@ -21,7 +21,7 @@
   </p>
 
   <p>
-    <h2 class="title is-4 mt-6">Category:</h2><%= product.category_id %>
+    <h2 class="title is-4 mt-6">Category:</h2><%= link_to product.category.name, category_path(product.category) %>
 
   </p>
 
