@@ -1,19 +1,20 @@
 require "csv"
 
+Product.delete_all
+Category.delete_all
+ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'categories';")
 #Category CREATION
 
-Category.delete_all
-
-filenamecategory = Rails.root.join "db/equipment.csv"
+filenamecategory = Rails.root.join "db/equipment_categories.csv"
 puts "Reading in the file from here #{filenamecategory}"
 
-csv_data = File.read(filenamecategory)
-categories = CSV.parse(csv_data, headers: true, encoding: 'utf-8')
+csv_datacategory = File.read(filenamecategory)
+categories = CSV.parse(csv_datacategory, headers: true, encoding: 'utf-8')
 
 categories.each do |category|
 
-  # Create product records
-  category_record = Product.create(name: category["name"], description: category["description"])
+  # Create category records
+  category_record = Category.create(name: category["name"], description: category["description"])
 
   if category_record.valid?
     puts "#{category["name"]} Created"
@@ -23,11 +24,9 @@ categories.each do |category|
   end
 end
 
-puts "Created #{{category}.count} Names"
+puts "Created #{categories.count} Categories"
 
 #Product CREATION
-
-Product.delete_all
 
 filenameproduct = Rails.root.join "db/equipment.csv"
 puts "Reading in the file from here #{filenameproduct}"
@@ -48,4 +47,4 @@ products.each do |product|
   end
 end
 
-puts "Created #{{Product}.count} Names"
+puts "Created #{Product.count} Products"
