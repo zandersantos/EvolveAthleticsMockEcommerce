@@ -4,7 +4,6 @@ require "csv"
 
 Category.delete_all
 
-
 filenamecategory = Rails.root.join "db/equipment.csv"
 puts "Reading in the file from here #{filenamecategory}"
 
@@ -29,7 +28,6 @@ puts "Created #{{category}.count} Names"
 #Product CREATION
 
 Product.delete_all
-
 
 filenameproduct = Rails.root.join "db/equipment.csv"
 puts "Reading in the file from here #{filenameproduct}"
