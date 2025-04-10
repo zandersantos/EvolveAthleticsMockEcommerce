@@ -2,7 +2,7 @@
 
 <ol class="ml-5">
   <% @products.each do |product|%>
-    <li><%= link_to product.name, product%></li>
-    <li>Category: <%=link_to product.category.name, product.category%></li>
+    <li><%= link_to product.name, product%>:  Category: <%=link_to product.category.name, product.category%></li>
+
   <%end%>
 </ol>
