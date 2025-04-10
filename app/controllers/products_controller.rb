@@ -3,11 +3,12 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
-    @products = Product.all
+    @products = Product.order("name DESC")
   end
 
   # GET /products/1 or /products/1.json
   def show
+    @product = Product.find(params[:id])
   end
 
   # GET /products/new
