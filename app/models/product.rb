@@ -1,6 +1,8 @@
 class Product < ApplicationRecord
   belongs_to :category
 
+  has_one_attached :image
+
   validates :name, uniqueness: true
   validates :name, :description, presence: true
   validates :stockquantity, numericality: {only_integer: true}
