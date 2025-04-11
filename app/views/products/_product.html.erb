@@ -1,5 +1,12 @@
 <% content_for(:html_title) {@product.name} %>
 <div id="<%= dom_id product %>">
+  <% if product.image.present? %>
+    <div class="card-image">
+      <figure class="image is-4by3">
+        <%= image_tag product.image%>
+      </figure>
+    </div>
+  <%end%>
   <p>
     <h2 class="title is-4 mt-6">Name:</h2><%= product.name %>
 
