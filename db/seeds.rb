@@ -1,9 +1,16 @@
 require "csv"
+require "open-uri"
 
 Product.destroy_all
 Category.destroy_all
+AdminUser.destroy_all
+
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'categories';")
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'products';")
+
+image_client = Pexels::Client.new
+response = image_client.photos.search('equipment',page: 1, per_page: 100)
+
 #Category CREATION
 
 filenamecategory = Rails.root.join "db/equipment_categories.csv"
@@ -27,6 +34,13 @@ end
 
 puts "Created #{categories.count} Categories"
 
+Product.all.each_with_index do |product,index|
+  downloaded_image = URI.parse(response.photos[index].src["small"]).open
+  product.image.attach(
+    io:downloaded_image,
+    filename: "#{product.name}-#{product.category.name}.jpg"
+    )
+end
 #Product CREATION
 
 filenameproduct = Rails.root.join "db/equipment.csv"
@@ -47,6 +61,9 @@ products.each do |product|
     puts "Errors: #{product_record.errors.full_messages.join(", ")}"
   end
 end
+
+
+
 
 puts "Created #{Product.count} Products"
 AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?
