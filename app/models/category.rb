@@ -1,5 +1,6 @@
 class Category < ApplicationRecord
   validates :name, uniqueness: true
+  validates :name, :description, presence: true
 
   has_many :products
 
