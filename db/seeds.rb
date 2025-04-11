@@ -1,7 +1,7 @@
 require "csv"
 
-Product.delete_all
-Category.delete_all
+Product.destroy_all
+Category.destroy_all
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'categories';")
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'products';")
 #Category CREATION
