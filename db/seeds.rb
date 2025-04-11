@@ -9,7 +9,7 @@ ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE 
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'products';")
 
 image_client = Pexels::Client.new
-response = image_client.photos.search('equipment',page: 1, per_page: 100)
+response = image_client.photos.search('exercise',page: 1, per_page: 100)
 
 #Category CREATION
 
@@ -34,11 +34,11 @@ end
 
 puts "Created #{categories.count} Categories"
 
-Product.all.each_with_index do |product,index|
+Category.all.each_with_index do |category,index|
   downloaded_image = URI.parse(response.photos[index].src["small"]).open
-  product.image.attach(
+  category.image.attach(
     io:downloaded_image,
-    filename: "#{product.name}-#{product.category.name}.jpg"
+    filename: "#{category.name}.jpg"
     )
 end
 #Product CREATION

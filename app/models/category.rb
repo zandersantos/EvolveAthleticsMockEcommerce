@@ -1,4 +1,6 @@
 class Category < ApplicationRecord
+
+  has_one_attached :image
   validates :name, uniqueness: true
   validates :name, :description, presence: true
 
