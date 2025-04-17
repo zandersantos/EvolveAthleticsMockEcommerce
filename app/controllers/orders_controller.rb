@@ -21,6 +21,7 @@ class OrdersController < ApplicationController
 
   # POST /orders or /orders.json
   def create
+
     @order = Order.new(order_params)
 
     respond_to do |format|
@@ -32,6 +33,34 @@ class OrdersController < ApplicationController
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
+
+    product = Product.find(params[:product_id])
+
+    if product.nil?
+      redirect_to root_path
+      return
+    end
+
+    session = Stripe::Checkout::Session.create(
+      payment_method_types: [ "card" ],
+      success_url: checkout_success_url,
+      cancel_url: checkout_cancel_url,
+      mode: "payment",
+      line_items: [
+        price_data: {
+          currency: "cad",
+          product_data: {
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            stock_quantity: product.stockquantity
+          },
+          unit_amount: product.price_cents
+        },
+        quantity: 1
+      ]
+    )
+    redirect_to session.url, allow_other_host: true
   end
 
   # PATCH/PUT /orders/1 or /orders/1.json
