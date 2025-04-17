@@ -1,44 +1,45 @@
-<% content_for(:html_title) {@product.name} %>
-<div id="<%= dom_id product %>">
+<% content_for(:html_title) { @product.name } %>
+<div id="<%= dom_id product %>" class="card">
   <% if product.image.present? %>
     <div class="card-image">
       <figure class="image is-4by3">
-        <%= image_tag product.image%>
+        <%= image_tag product.image %>
       </figure>
     </div>
-  <%end%>
-  <p>
-    <h2 class="title is-4 mt-6">Name:</h2><%= product.name %>
+  <% end %>
 
-  </p>
+  <div class="card-content">
+    <div class="content">
+      <p>
+        <h2 class="title is-4 mt-6">Name:</h2><%= product.name %>
+      </p>
 
-  <p>
-    <h2 class="title is-4 mt-6">Description:</h2><%= product.description %>
+      <p>
+        <h2 class="title is-4 mt-6">Description:</h2><%= product.description %>
+      </p>
 
-  </p>
+      <p>
+        <h2 class="title is-4 mt-6">Price:</h2>$<%= product.price %>
+      </p>
 
-  <p>
-    <h2 class="title is-4 mt-6">Price:</h2>$<%= product.price %>
+      <p>
+        <h2 class="title is-4 mt-6">Stock Quantity:</h2><%= product.stockquantity %>
+      </p>
 
-  </p>
+      <p>
+        <h2 class="title is-4 mt-6">Category:</h2><%= link_to product.category.name, category_path(product.category) %>
+      </p>
 
-  <p>
-    <h2 class="title is-4 mt-6">Stock Quantity:</h2><%= product.stockquantity %>
-
-  </p>
-
-  <p>
-    <h2 class="title is-4 mt-6">Category:</h2><%= link_to product.category.name, category_path(product.category) %>
-
-  </p>
-  <%if cart.include? product%>
-    <%= button_to cart_path(product), method: :delete%>
-      Remove from Cart
-    <%end%>
-  <%else%>
-    <%= form_with url: cart_index_path do %>
-      <%= hidden_field_tag(:id, product.id)%>
-      <%= button_tag "Add to cart"%>
-    <%end%>
-  <%end%>
+      <% if cart.include?(product) %>
+        <%= button_to cart_path(product), method: :delete, class: "button is-small is-danger" do %>
+          Remove from Cart
+        <% end %>
+      <% else %>
+        <%= form_with url: cart_index_path, method: :post do %>
+          <%= hidden_field_tag(:id, product.id) %>
+          <%= button_tag "Add to Cart", class: "button is-primary" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 </div>
