@@ -10,38 +10,55 @@
 <section class="section">
   <div class="container">
     <div class="columns">
+
       <!-- Products Column -->
       <div class="column">
         <h4 class="title is-4">Products</h4>
         <div class="ml-5">
-  <% @product.each do |product| %>
-    <div class="box mb-4">
-      <div class="columns is-vcentered">
-        <!-- Image column -->
-        <div class="column is-one-third">
-          <% if product.image.attached? %>
-            <%= image_tag product.image%>
-          <% else %>
-            <p class="has-text-grey-light">No image available</p>
-          <% end %>
-          <%= form_with url: checkout_create_path, method: :post do %>
-            <%= hidden_field_tag(:product_id, product.id, autocomplete: "off") %>
-            <%= button_tag "Buy Now", data: {turbo: false} %>
-          <% end %>
-        </div>
+          <% @product.each do |product| %>
+            <div class="box mb-4">
+              <div class="columns is-vcentered">
 
-        <!-- Info column -->
-        <div class="column">
-          <p class="title is-5 mb-1">
-            <%= link_to product.name, product %>
-          </p>
-          <p class="subtitle is-6">
-            <em>(<%= link_to product.category.name, product.category %>)</em>
+                <!-- Image column -->
+                <div class="column is-one-third">
+                  <% if product.image.attached? %>
+                    <%= image_tag product.image %>
+                  <% else %>
+                    <p class="has-text-grey-light">No image available</p>
+                  <% end %>
+
+                  <%= form_with url: checkout_create_path, method: :post do %>
+                    <%= hidden_field_tag(:product_id, product.id, autocomplete: "off") %>
+                    <%= button_tag "Buy Now", data: { turbo: false } %>
+                  <% end %>
+                </div>
+
+                <!-- Info column -->
+                <div class="column">
+                  <p class="title is-5 mb-1">
+                    <%= link_to product.name, product %>
+                  </p>
+                  <p class="subtitle is-6">
+                    <em>(<%= link_to product.category.name, product.category %>)</em>
+                  </p>
+                  <p class="has-text-weight-semibold mt-2">
+                    In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
+                  </p>
+                </div>
+
+              </div>
+            </div>
+          <% end %>
+
+          <p class="mt-4">
+            <%= link_to "See the Entire List of Products", products_path %>
           </p>
         </div>
       </div>
+
     </div>
-  <% end %>
+  </div>
+</section>
 
   <p class="mt-4"><%= link_to "See the Entire List of Products", products_path %></p>
 </div>
