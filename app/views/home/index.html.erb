@@ -24,6 +24,10 @@
           <% else %>
             <p class="has-text-grey-light">No image available</p>
           <% end %>
+          <%= form_with url: checkout_create_path, method: :post do %>
+            <%= hidden_field_tag(:product_id, product.id, autocomplete: "off") %>
+            <%= button_tag "Buy Now", data: {turbo: false} %>
+          <% end %>
         </div>
 
         <!-- Info column -->

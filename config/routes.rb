@@ -6,6 +6,11 @@ Rails.application.routes.draw do
   resources :customers
   resources :products
   resources :categories
+  scope "/orders" do
+    post "create", to: "orders#create", as: "checkout_create"
+    get "success", to: "orders#success", as: "checkout_success"
+    get "cancel", to: "orders#cancel", as: "checkout_cancel"
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

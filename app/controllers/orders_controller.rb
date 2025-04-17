@@ -22,25 +22,13 @@ class OrdersController < ApplicationController
   # POST /orders or /orders.json
   def create
 
-    @order = Order.new(order_params)
-
-    respond_to do |format|
-      if @order.save
-        format.html { redirect_to @order, notice: "Order was successfully created." }
-        format.json { render :show, status: :created, location: @order }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @order.errors, status: :unprocessable_entity }
-      end
-    end
-
     product = Product.find(params[:product_id])
 
     if product.nil?
       redirect_to root_path
       return
     end
-
+    product_cents = (product.price * 100).to_i
     session = Stripe::Checkout::Session.create(
       payment_method_types: [ "card" ],
       success_url: checkout_success_url,
@@ -52,10 +40,8 @@ class OrdersController < ApplicationController
           product_data: {
             name: product.name,
             description: product.description,
-            price: product.price,
-            stock_quantity: product.stockquantity
           },
-          unit_amount: product.price_cents
+          unit_amount: product_cents
         },
         quantity: 1
       ]
@@ -85,15 +71,15 @@ class OrdersController < ApplicationController
       format.json { head :no_content }
     end
   end
+  def success
+    # We go here if the payment succeeded!
+  end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_order
-      @order = Order.find(params.expect(:id))
-    end
+  def cancel
+    # Something went wrong!
+  end
 
-    # Only allow a list of trusted parameters through.
-    def order_params
-      params.expect(order: [ :total, :order_date, :customer_id ])
-    end
+
+
+
 end
