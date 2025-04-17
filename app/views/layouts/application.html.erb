@@ -24,6 +24,11 @@
   <body>
     <section class="section">
       <div class="container">
+        <% flash.each do |type, msg|%>
+          <div>
+            <%= msg %>
+          </div>
+        <%end%>
         <%= yield %>
         <%= render partial: "common/footer"%>
       </div>
