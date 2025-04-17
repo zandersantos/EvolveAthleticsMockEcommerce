@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :cart, only [:create, :destroy]
+  resources :cart, only: [:create, :destroy]
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   root to: "home#index"
