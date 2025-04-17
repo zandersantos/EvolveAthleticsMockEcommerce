@@ -31,8 +31,14 @@
     <h2 class="title is-4 mt-6">Category:</h2><%= link_to product.category.name, category_path(product.category) %>
 
   </p>
-  <%= form_with url: checkout_create_path, method: :post do %>
-    <%= hidden_field_tag(:product_id, product.id, autocomplete: "off") %>
-    <%= button_tag "Buy Now", data: {turbo: false} %>
-  <% end %>
+  <%if cart.include? product%>
+    <%= button_to cart_path(product), method: :delete%>
+      Remove from Cart
+    <%end%>
+  <%else%>
+    <%= form_with url: cart_index_path do %>
+      <%= hidden_field_tag(:id, product.id)%>
+      <%= button_tag "Add to cart"%>
+    <%end%>
+  <%end%>
 </div>
