@@ -7,16 +7,21 @@ class CartController < ApplicationController
       session[:cart] << @product.id
       flash[:notice] = "#{@product.name} was added to the cart!"
     end
+    redirect_to root_path
   end
 
   def destroy
-    if session[:cart].includes?(@product.id)
+    if session[:cart].include?(@product.id)
       session[:cart].delete(@product.id)
       flash[:notice] = "#{@product.name} was removed from the cart!"
+    end
+    redirect_to root_path
   end
 
-  private get_product
-  product_id = params[:id].to_i
-  @product = Product.find(product_id)
+  private
+
+  def get_product
+    product_id = params[:id].to_i
+    @product = Product.find(product_id)
   end
 end

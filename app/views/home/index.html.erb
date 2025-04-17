@@ -10,7 +10,6 @@
 <section class="section">
   <div class="container">
     <div class="columns">
-
       <!-- Products Column -->
       <div class="column">
         <h4 class="title is-4">Products</h4>
@@ -18,18 +17,12 @@
           <% @product.each do |product| %>
             <div class="box mb-4">
               <div class="columns is-vcentered">
-
                 <!-- Image column -->
                 <div class="column is-one-third">
                   <% if product.image.attached? %>
                     <%= image_tag product.image %>
                   <% else %>
                     <p class="has-text-grey-light">No image available</p>
-                  <% end %>
-
-                  <%= form_with url: checkout_create_path, method: :post do %>
-                    <%= hidden_field_tag(:product_id, product.id, autocomplete: "off") %>
-                    <%= button_tag "Buy Now", data: { turbo: false } %>
                   <% end %>
                 </div>
 
@@ -44,8 +37,18 @@
                   <p class="has-text-weight-semibold mt-2">
                     In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
                   </p>
-                </div>
 
+                  <% if cart.include?(product) %>
+                    <%= button_to cart_path(product), method: :delete do %>
+                      Remove from Cart
+                    <% end %>
+                  <% else %>
+                    <%= form_with url: cart_index_path, method: :post do %>
+                      <%= hidden_field_tag(:id, product.id) %>
+                      <%= button_tag "Add to Cart" %>
+                    <% end %>
+                  <% end %>
+                </div>
               </div>
             </div>
           <% end %>
@@ -55,7 +58,6 @@
           </p>
         </div>
       </div>
-
     </div>
   </div>
 </section>
