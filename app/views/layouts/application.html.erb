@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title><%= content_for(:html_title) || "EvolveAthletics" %></title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
+    <title><%= content_for(:html_title) || "EvolveAthletics" %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
     <%= yield :head %>
 
@@ -22,15 +22,55 @@
   </head>
 
   <body>
+    <header>
+      <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <strong>Evolve Athletics</strong>
+          </a>
+        </div>
+
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                🛒 Cart <%= cart.present? ? "(#{cart.size})" : "" %>
+              </a>
+
+              <% if cart.present? %>
+                <div class="navbar-dropdown is-right">
+                  <% cart.each do |product| %>
+                    <div class="navbar-item is-flex is-justify-content-space-between is-align-items-center">
+                      <span style="margin-right: 1rem;"><%= product.name %></span>
+                      <%= button_to "Remove", cart_path(product), method: :delete, class: "button is-small is-danger" %>
+                    </div>
+                  <% end %>
+                  <hr class="navbar-divider">
+                  <div class="navbar-item">
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
     <section class="section">
       <div class="container">
-        <% flash.each do |type, msg|%>
-          <div>
+        <% flash.each do |type, msg| %>
+          <% bulma_class = case type.to_sym
+             when :notice then "is-success"
+             when :alert then "is-danger"
+             else "is-info"
+          end %>
+          <div class="notification <%= bulma_class %>">
             <%= msg %>
           </div>
-        <%end%>
+        <% end %>
+
         <%= yield %>
-        <%= render partial: "common/footer"%>
+        <%= render partial: "common/footer" %>
       </div>
     </section>
   </body>
