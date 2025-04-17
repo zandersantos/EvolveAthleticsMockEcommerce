@@ -1,4 +1,5 @@
 require "csv"
+require "uri"
 require "open-uri"
 
 Product.destroy_all
@@ -9,7 +10,8 @@ ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE 
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'products';")
 
 image_client = Pexels::Client.new
-response = image_client.photos.search('exercise',page: 1, per_page: 100)
+product_image = Pexels::Client.new
+response = image_client.photos.search('workout',page: 1, per_page: 100)
 
 #Category CREATION
 
@@ -35,7 +37,8 @@ end
 puts "Created #{categories.count} Categories"
 
 Category.all.each_with_index do |category,index|
-  downloaded_image = URI.parse(response.photos[index].src["small"]).open
+  downloaded_image = URI.parse(response.photos[index].src["tiny"]).open
+
   category.image.attach(
     io:downloaded_image,
     filename: "#{category.name}.jpg"
@@ -53,6 +56,10 @@ products.each do |product|
 
   # Create product records
   product_record = Product.create(name: product["name"], description: product["description"], price: product["price"], stockquantity: product["stockquantity"], category_id: product["category_id"])
+
+  pexel_response = image_client.photos.search(product_record.name)
+  downloaded_image = URI.parse(pexel_response.photos[0].src["medium"]).open
+  product_record.image.attach(io: downloaded_image, filename: "m-#{product_record.name}.jpg")
 
   if product_record.valid?
     puts "#{product["name"]} Created"

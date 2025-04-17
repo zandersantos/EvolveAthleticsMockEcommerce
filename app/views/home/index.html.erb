@@ -1,23 +1,46 @@
-<div class="columns">
-  <div class="column">
-    <h3 class="title is-3">Products</h3>
-    <ol class="ml-5">
-      <% @product.each do |product|%>
-        <li class="is-size-5"><%= link_to product.name, product %> <em>(<%= link_to product.category.name, product.category%>)</em></li>
-      <% end %>
-    </ol>
-    <p class= "mt-4"><%= link_to "See the Entire List of Products", products_path%></p>
+<!-- Header Section -->
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title is-1">Evolve Athletics</h1>
+    <p class="subtitle is-italic has-text-grey">Placeholder text</p>
   </div>
+</section>
 
+<!-- Columns Section -->
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <!-- Products Column -->
+      <div class="column">
+        <h4 class="title is-4">Products</h4>
+        <div class="ml-5">
+  <% @product.each do |product| %>
+    <div class="box mb-4">
+      <div class="columns is-vcentered">
+        <!-- Image column -->
+        <div class="column is-one-third">
+          <% if product.image.attached? %>
+            <%= image_tag product.image%>
+          <% else %>
+            <p class="has-text-grey-light">No image available</p>
+          <% end %>
+        </div>
 
-  <div class="column">
-    <h3 class="title is-3">Categories</h3>
-    <ol class="ml-5">
-      <% @categories.each do |category|%>
-        <li class="is-size-5"><%= link_to category.name, category_path(category) %></li>
-      <% end %>
-    </ol>
-    <p class= "mt-4"><%= link_to "See the Entire List of Categories", categories_path%></p>
-  </div>
+        <!-- Info column -->
+        <div class="column">
+          <p class="title is-5 mb-1">
+            <%= link_to product.name, product %>
+          </p>
+          <p class="subtitle is-6">
+            <em>(<%= link_to product.category.name, product.category %>)</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <p class="mt-4"><%= link_to "See the Entire List of Products", products_path %></p>
 </div>
-
+    </div>
+  </div>
+</section>
