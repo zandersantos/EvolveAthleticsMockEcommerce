@@ -14,7 +14,7 @@
       <div class="column">
         <h4 class="title is-4">Products</h4>
         <div class="ml-5">
-          <% @product.each do |product| %>
+          <% @products.each do |product| %> <!-- Use @products instead of @product -->
             <div class="box mb-4">
               <div class="columns is-vcentered">
                 <!-- Image column -->
@@ -52,6 +52,11 @@
               </div>
             </div>
           <% end %>
+
+          <!-- Pagination Controls -->
+          <div class="mt-4">
+            <%= paginate @products %> <!-- Pagination links -->
+          </div>
 
           <p class="mt-4">
             <%= link_to "See the Entire List of Products", products_path %>
