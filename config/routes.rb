@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :pages, except: [ :show ]
-  get "/pages/:permalink", to: "page#permalink", as: "page_permalink"
+  get "/pages/:permalink", to: "pages#permalink", as: "page_permalink"
   resources :cart, only: [:create, :destroy]
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
