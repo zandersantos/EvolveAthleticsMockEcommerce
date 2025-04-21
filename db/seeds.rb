@@ -5,10 +5,25 @@ require "open-uri"
 Product.destroy_all
 Category.destroy_all
 AdminUser.destroy_all
+Page.destroy_all
 
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'categories';")
 ActiveRecord::Base.connection.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'products';")
 
+#About and Contact Pages Section
+Page.create(
+  title: "About EvolveAthletics",
+  content:"EvolveAthletics is a MOCK e-Commerce Athletics store. This Project will be used for the E-Commerce Project in the Fullstack Web Development Course in the Business Information Technology program at Red River College.",
+  permalink: "about"
+  )
+
+Page.create(
+  title: "Contact Us",
+  content:"Email me at zsantos@rrc.ca if you have any questions or inquiries",
+  permalink: "contact"
+  )
+
+#Image Creation
 image_client = Pexels::Client.new
 product_image = Pexels::Client.new
 response = image_client.photos.search('workout',page: 1, per_page: 100)
