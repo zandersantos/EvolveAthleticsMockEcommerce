@@ -2,16 +2,10 @@
 
 <%= render @category %>
 
-<div>
-  <%= link_to "Edit this category", edit_category_path(@category) %> |
-  <%= link_to "Back to categories", categories_path %>
-
-  <%= button_to "Destroy this category", @category, method: :delete %>
-</div>
 
 <h2>Products in this Category</h2>
 <ul>
   <% @category.products.each do |product| %>
-    <li><%= link_to product.name, product %></li>
+    <li> - <%= link_to product.name, product %></li>
   <% end %>
 </ul>
