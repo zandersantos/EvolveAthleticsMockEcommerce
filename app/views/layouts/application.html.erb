@@ -33,7 +33,17 @@
         <div class="navbar-menu">
           <div class="navbar-end">
             <div class="navbar-item">
-              <%= button_to "Login", admin_root_path, method: :get, class: "button is-small is-link" %>
+              <div class="field is-grouped">
+                <p class="control">
+                  <%= button_to "About Us", page_permalink_path("about"), method: :get, class: "button is-small is-link" %>
+                </p>
+                <p class="control">
+                  <%= button_to "Contact", page_permalink_path("contact"), method: :get, class: "button is-small is-link" %>
+                </p>
+                <p class="control">
+                  <%= button_to "Login", admin_root_path, method: :get, class: "button is-small is-link" %>
+                </p>
+              </div>
             </div>
 
             <div class="navbar-item has-dropdown is-hoverable">
@@ -51,6 +61,7 @@
                   <% end %>
                   <hr class="navbar-divider">
                   <div class="navbar-item">
+                    <%# Checkout or additional options could go here %>
                   </div>
                 </div>
               <% end %>
