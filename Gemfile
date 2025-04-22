@@ -42,6 +42,7 @@ gem "thruster", require: false
 gem "rubocop"
 gem "csv"
 gem "kaminari"
+gem "faker"
 
 gem "activeadmin"
 gem "devise"

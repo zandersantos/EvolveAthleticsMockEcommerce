@@ -1,11 +1,44 @@
-name,description,price,stockquantity,category_id
-Barbell,A versatile weightlifting bar ideal for strength training and  powerlifting  and Olympic lifts.,80,30,2
-Bench,A flat workout bench perfect for presses and  step-ups  and general strength training support.,100,24,2
-Adjustable Dumbbell,A space-saving weight system with adjustable plates to customize resistance in a single compact unit. (Sold individually. Weight settings range from 5 lbs to 50 lbs in 5 lb increments.),160,24,1
-Gym mat,A cushioned mat providing comfort and safety for stretching and floor exercises and yoga.,25,50,4
-Incline bench,An angled workout bench built to target upper muscles during strength and dumbbell training.,140,20,2
-Adjustable Kettlebell,A space-saving kettlebell with adjustable weight plates to customize resistance in a single compact unit. (Sold individually. Weight settings range from 10 lbs to 40 lbs in 5 lb increments.),120,24,1
-Pull-up bar,A durable overhead bar for bodyweight exercises that build upper body and core strength.,40,30,2
-SZ-Bar,A curved weight bar designed to reduce joint strain during curls and triceps and upper body lifts.,50,20,2
-Swiss Ball,An inflatable stability ball used for improving balance and  core strength and upper body lifts.,30,30,3
-Resistance Bands,Lightweight  portable bands that add scalable resistance to strength and mobility workouts.,25,60,3
+name,description,price,stockquantity,category_id,,,
+Barbell,A versatile weightlifting bar ideal for strength training and  powerlifting  and Olympic lifts.,80,30,2,,,
+Bench,A flat workout bench perfect for presses and  step-ups  and general strength training support.,100,24,2,,,
+Adjustable Dumbbell,A space-saving weight system with adjustable plates to customize resistance in a single compact unit. (Sold individually. Weight settings range from 5 lbs to 50 lbs in 5 lb increments.),160,24,1,,,
+Gym mat,A cushioned mat providing comfort and safety for stretching and floor exercises and yoga.,25,50,4,,,
+Incline bench,An angled workout bench built to target upper muscles during strength and dumbbell training.,140,20,2,,,
+Adjustable Kettlebell,A space-saving kettlebell with adjustable weight plates to customize resistance in a single compact unit. (Sold individually. Weight settings range from 10 lbs to 40 lbs in 5 lb increments.),120,24,1,,,
+Pull-up bar,A durable overhead bar for bodyweight exercises that build upper body and core strength.,40,30,2,,,
+SZ-Bar,A curved weight bar designed to reduce joint strain during curls and triceps and upper body lifts.,50,20,2,,,
+Swiss Ball,An inflatable stability ball used for improving balance and  core strength and upper body lifts.,30,30,3,,,
+Resistance Bands,Lightweight  portable bands that add scalable resistance to strength and mobility workouts.,25,60,3,,,
+Bosu ball  ,"A half-sphere balance trainer used to improve core strength, stability, and coordination in exercises like squats, lunges, and push-ups.",40,20,3,,,
+Cable  ,"A machine that uses adjustable cables and pulleys for a wide variety of resistance exercises, targeting multiple muscle groups for strength training.",200,22,2,,,
+Dumbbell  ,"A handheld weight used for strength training exercises targeting specific muscle groups, such as biceps curls and shoulder presses.",40,10,2,,,
+Elliptical machine  ,"A low-impact cardio machine that simulates walking or running, providing an effective workout for the legs, glutes, and cardiovascular system.",200,5,4,,,
+Ez barbell  ,A curved barbell designed to reduce strain on the wrists and elbows during exercises like bicep curls and tricep extensions.,50,50,2,,,
+Hammer  ,"A specialized weight used in strength training exercises, often resembling a sledgehammer, to build functional strength and endurance.",30,20,2,,,
+Kettlebell  ,"A cast-iron weight with a handle used for dynamic exercises, including swings, squats, and presses, to improve strength, endurance, and power.",40,34,2,,,
+Leverage machine  ,"A machine that uses a lever system to provide resistance for various strength exercises, allowing for controlled movement and muscle engagement.",200,12,2,,,
+Medicine ball  ,"A weighted ball used for dynamic movements, such as slams, throws, and twists, to build explosive power and improve core strength.",20,14,2,,,
+Olympic barbell  ,"A heavy-duty barbell used in weightlifting, typically with a longer length and greater weight capacity, for exercises like snatches, cleans, and squats.",100,43,2,,,
+Roller  ,"A foam roller used for self-myofascial release, improving flexibility, and relieving muscle tension by rolling over targeted muscle groups.",20,23,3,,,
+Rope  ,"A heavy, durable rope used in exercises like battle ropes, designed to improve strength, endurance, and coordination through dynamic, wave-like movements.",25,32,3,,,
+Skierg machine  ,"A cardio machine that simulates the motion of cross-country skiing, providing a full-body workout that targets the arms, core, and legs.",500,10,4,,,
+Sled machine  ,"A machine used for pushing or pulling weighted sleds to build strength, power, and endurance, often used in speed and conditioning drills.",500,10,2,,,
+Smith machine  ,"A weight machine with a fixed barbell that moves vertically, providing safety and support during exercises like squats, bench presses, and deadlifts.",500,10,2,,,
+Stability ball  ,"An inflatable ball used for improving balance, core strength, and flexibility, commonly incorporated into exercises like planks and squats.",30,20,3,,,
+Stationary bike  ,"A cardio machine that simulates cycling, providing a low-impact workout for cardiovascular health and leg strength.",100,20,4,,,
+Stepmill machine  ,"A cardio machine that mimics the movement of climbing stairs, providing an effective lower-body workout that focuses on the legs, glutes, and cardiovascular system.",500,10,4,,,
+Tire  ,"A large, heavy rubber tire used in exercises such as tire flips, promoting strength, power, and endurance through functional movements.",70,20,3,,,
+Trap bar  ,"A hexagonal-shaped barbell designed for deadlifts, allowing for a more neutral grip and reduced strain on the lower back.",50,30,2,,,
+Upper body ergometer  ,"A machine that allows users to perform a cardio workout using their upper body, similar to cycling but with arm movement, improving shoulder and arm endurance.",300,30,4,,,
+Weighted  vest,"A vest designed to add resistance during exercises, increasing workout intensity and building strength",60,28,2,,,
+Wheel roller  ,"A fitness tool that targets the core and upper body, involving a rolling motion to strengthen the abdominals, shoulders, and arms.",20,28,3,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
