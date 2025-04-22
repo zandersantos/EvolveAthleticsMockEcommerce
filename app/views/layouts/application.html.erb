@@ -30,6 +30,22 @@
           </a>
         </div>
 
+        <!-- 🔍 Search Bar -->
+        <div class="navbar-item">
+          <div class="search-bar mb-5">
+            <%= form_with url: search_all_path, method: :get, local: true do |form| %>
+              <div class="field has-addons">
+                <div class="control">
+                  <%= form.text_field :query, placeholder: "Search for products or categories...", class: "input" %>
+                </div>
+                <div class="control">
+                  <%= form.submit "Search", class: "button is-primary" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
         <div class="navbar-menu">
           <div class="navbar-end">
             <div class="navbar-item">
