@@ -1,0 +1,36 @@
+<h2>Search Results for "<%= @query.presence || 'All' %>"</h2>
+
+<% has_results = @products.any? || @categories.any? %>
+
+<% if has_results %>
+
+  <%# --- Products --- %>
+  <h3>Products</h3>
+  <% if @products.any? %>
+    <ul>
+      <% @products.each do |product| %>
+        <li>
+          <%= link_to product.name, product_path(product) %>
+          - <%= number_to_currency(product.price) %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p><em>No products found.</em></p>
+  <% end %>
+
+  <%# --- Categories --- %>
+  <h3>Categories</h3>
+  <% if @categories.any? %>
+    <ul>
+      <% @categories.each do |category| %>
+        <li><%= link_to category.name, category_path(category) %></li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p><em>No categories found.</em></p>
+  <% end %>
+
+<% else %>
+  <p>No results found for "<%= @query %>".</p>
+<% end %>
