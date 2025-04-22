@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'search_all', to: 'search#search_all', as: 'search_all'
   resources :pages, except: [ :show ]
   get "/pages/:permalink", to: "pages#permalink", as: "page_permalink"
   resources :cart, only: [:create, :destroy]
