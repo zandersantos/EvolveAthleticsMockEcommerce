@@ -1,36 +1,46 @@
-<h2>Search Results for "<%= @query.presence || 'All' %>"</h2>
+<div class="content">
+  <h2 class="title is-3">
+    Search Results for "<%= @query.presence || 'All' %>"
+  </h2>
 
-<% has_results = @products.any? || @categories.any? %>
+  <% has_results = @products.any? || @categories.any? %>
 
-<% if has_results %>
-
-  <%# --- Products --- %>
-  <h3>Products</h3>
-  <% if @products.any? %>
-    <ul>
-      <% @products.each do |product| %>
-        <li>
-          <%= link_to product.name, product_path(product) %>
-          - <%= number_to_currency(product.price) %>
-        </li>
+  <% if has_results %>
+    <%# --- Products --- %>
+    <div class="box">
+      <h3 class="title is-4">Products</h3>
+      <% if @products.any? %>
+        <ul>
+          <% @products.each do |product| %>
+            <li>
+              <%= link_to product.name, product_path(product), class: "has-text-link" %>
+              - <strong><%= number_to_currency(product.price) %></strong>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="has-text-grey"><em>No products found.</em></p>
       <% end %>
-    </ul>
-  <% else %>
-    <p><em>No products found.</em></p>
-  <% end %>
+    </div>
 
-  <%# --- Categories --- %>
-  <h3>Categories</h3>
-  <% if @categories.any? %>
-    <ul>
-      <% @categories.each do |category| %>
-        <li><%= link_to category.name, category_path(category) %></li>
+    <%# --- Categories --- %>
+    <div class="box">
+      <h3 class="title is-4">Categories</h3>
+      <% if @categories.any? %>
+        <ul>
+          <% @categories.each do |category| %>
+            <li>
+              <%= link_to category.name, category_path(category), class: "has-text-link" %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="has-text-grey"><em>No categories found.</em></p>
       <% end %>
-    </ul>
+    </div>
   <% else %>
-    <p><em>No categories found.</em></p>
+    <div class="notification is-warning">
+      No results found for "<strong><%= @query %></strong>".
+    </div>
   <% end %>
-
-<% else %>
-  <p>No results found for "<%= @query %>".</p>
-<% end %>
+</div>
