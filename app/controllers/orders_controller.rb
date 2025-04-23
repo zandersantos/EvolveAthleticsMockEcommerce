@@ -25,31 +25,34 @@ class OrdersController < ApplicationController
 
   # POST /orders or /orders.json
   def create
+    # Collect the cart items
+    cart_items = cart
 
-    product = Product.find(params[:product_id])
-
-    if product.nil?
-      redirect_to root_path
-      return
-    end
-    product_cents = (product.price * 100).to_i
-    session = Stripe::Checkout::Session.create(
-      payment_method_types: [ "card" ],
-      success_url: checkout_success_url,
-      cancel_url: checkout_cancel_url,
-      mode: "payment",
-      line_items: [
+    # Prepare the line items for Stripe
+    line_items = cart_items.map do |item|
+      {
         price_data: {
           currency: "cad",
           product_data: {
-            name: product.name,
-            description: product.description,
+            name: item[:product].name,
+            description: item[:product].description
           },
-          unit_amount: product_cents
+          unit_amount: (item[:product].price * 100).to_i # Price in cents
         },
-        quantity: 1
-      ]
+        quantity: item[:quantity]
+      }
+    end
+
+    # Create the Stripe checkout session
+    session = Stripe::Checkout::Session.create(
+      payment_method_types: ["card"],
+      success_url: checkout_success_url,
+      cancel_url: checkout_cancel_url,
+      mode: "payment",
+      line_items: line_items
     )
+
+    # Redirect the user to Stripe checkout
     redirect_to session.url, allow_other_host: true
   end
 

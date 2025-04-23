@@ -3,7 +3,7 @@
   <head>
     <title><%= content_for(:html_title) || "EvolveAthletics" %></title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
@@ -83,8 +83,11 @@
                     </div>
                   <% end %>
                   <hr class="navbar-divider">
+                  <!-- Checkout Button Outside the Loop -->
                   <div class="navbar-item">
-                    <%= link_to "Checkout", new_order_path, class: "button is-primary" %>
+                    <%= form_with url: checkout_create_path, method: :post do %>
+                      <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
+                    <% end %>
                   </div>
                 </div>
               <% end %>
@@ -98,9 +101,9 @@
       <div class="container">
         <% flash.each do |type, msg| %>
           <% bulma_class = case type.to_sym
-             when :notice then "is-success"
-             when :alert then "is-danger"
-             else "is-info"
+                           when :notice then "is-success"
+                           when :alert then "is-danger"
+                           else "is-info"
           end %>
           <div class="notification <%= bulma_class %>">
             <%= msg %>
