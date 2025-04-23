@@ -12,10 +12,10 @@ class OrdersController < ApplicationController
 
   # GET /orders/new
   def new
-    @order = Order.new
-    @cart_items = cart # Retrieve items from the session cart
-    @total_price = @cart_items.sum do |item|
-      item[:quantity] * item[:product].price
+    def new
+      @order = Order.new # Ensure @order is initialized
+      @cart_items = cart # Retrieve items from the session cart
+      @total_price = @cart_items.sum { |item| item[:quantity] * item[:product].price } # Calculate total price
     end
   end
 

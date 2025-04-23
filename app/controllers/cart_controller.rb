@@ -5,10 +5,19 @@ class CartController < ApplicationController
   def create
     product_id = params[:id].to_i
     quantity = params[:quantity].to_i
-    unless session[:cart].any? { |item| item["id"] == product_id }
+
+    existing_item = session[:cart].find { |item| item["id"] == product_id }
+
+    if existing_item
+      # If the product already exists in the cart, update its quantity
+      existing_item["quantity"] += quantity
+      flash[:notice] = "#{quantity}x #{@product.name} were added to your cart! Total quantity: #{existing_item['quantity']}."
+    else
+      # Otherwise, add the new product to the cart
       session[:cart] << { "id" => product_id, "quantity" => quantity }
       flash[:notice] = "#{quantity}x #{@product.name} were added to the cart!"
     end
+
     redirect_to root_path
   end
 
