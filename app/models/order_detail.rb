@@ -3,5 +3,6 @@ class OrderDetail < ApplicationRecord
   belongs_to :product
 
   validates :quantity, numericality: {only_integer: true}
-  validates :price_at_purchase, numericality: true
+  validates :price_at_purchase, :total, numericality: true
+  validates :quantity, :price_at_purchase, :total, presence: true
 end
