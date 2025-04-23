@@ -43,10 +43,16 @@
                       Remove from Cart
                     <% end %>
                   <% else %>
-                    <%= form_with url: cart_index_path, method: :post do %>
-                      <%= hidden_field_tag(:id, product.id) %>
-                      <%= button_tag "Add to Cart" %>
-                    <% end %>
+                  <%= form_with url: cart_index_path, method: :post do %>
+                    <%= hidden_field_tag :id, product.id %>
+                    <div class="field">
+                      <label class="label">Quantity</label>
+                      <div class="control">
+                        <%= number_field_tag :quantity, 1, min: 1, max: product.stockquantity, class: "input" %>
+                      </div>
+                    </div>
+                    <%= button_tag "Add to Cart", class: "button is-primary" %>
+                  <% end %>
                   <% end %>
                 </div>
               </div>

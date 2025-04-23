@@ -1,11 +1,12 @@
-<% content_for :title, "New order" %>
-
-<h1>New order</h1>
-
-<%= render "form", order: @order %>
-
-<br>
-
-<div>
-  <%= link_to "Back to orders", orders_path %>
-</div>
+<%= form_with(model: @order) do |form| %>
+  <% if @order.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(@order.errors.count, "error") %> prohibited this order from being saved:</h2>
+      <ul>
+        <% @order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>

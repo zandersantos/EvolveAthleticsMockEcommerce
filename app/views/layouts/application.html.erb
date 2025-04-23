@@ -74,15 +74,17 @@
 
               <% if cart.present? %>
                 <div class="navbar-dropdown is-right">
-                  <% cart.each do |product| %>
+                  <% cart.each do |item| %>
                     <div class="navbar-item is-flex is-justify-content-space-between is-align-items-center">
-                      <span style="margin-right: 1rem;"><%= product.name %></span>
-                      <%= button_to "Remove", cart_path(product), method: :delete, class: "button is-small is-danger" %>
+                      <span style="margin-right: 1rem;">
+                        <%= item[:product].name %> (x<%= item[:quantity] %>)
+                      </span>
+                      <%= button_to "Remove", cart_path(item[:product]), method: :delete, class: "button is-small is-danger" %>
                     </div>
                   <% end %>
                   <hr class="navbar-divider">
                   <div class="navbar-item">
-                    <%# Checkout or additional options could go here %>
+                    <%= link_to "Checkout", new_order_path, class: "button is-primary" %>
                   </div>
                 </div>
               <% end %>

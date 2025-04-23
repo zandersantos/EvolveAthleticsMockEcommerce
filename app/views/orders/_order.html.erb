@@ -1,17 +1,26 @@
-<div id="<%= dom_id order %>">
-  <p>
-    <strong>Total:</strong>
-    <%= order.total %>
-  </p>
+<h1 class="title is-3">Your Order</h1>
 
-  <p>
-    <strong>Order date:</strong>
-    <%= order.order_date %>
-  </p>
+<table class="table is-striped is-fullwidth">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Individual Price</th>
+      <th>Total Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @cart_items.each do |item| %>
+      <tr>
+        <td><%= item[:product].name %></td>
+        <td><%= item[:quantity] %></td>
+        <td>$<%= item[:product].price %></td>
+        <td>$<%= item[:quantity] * item[:product].price %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
-  <p>
-    <strong>Customer:</strong>
-    <%= order.customer_id %>
-  </p>
+<h2 class="title is-4">Order Total: $<%= @total_price %></h2>
 
-</div>
+<%= button_to "Confirm Order", orders_path, method: :post, class: "button is-success" %>

@@ -13,6 +13,10 @@ class OrdersController < ApplicationController
   # GET /orders/new
   def new
     @order = Order.new
+    @cart_items = cart # Retrieve items from the session cart
+    @total_price = @cart_items.sum do |item|
+      item[:quantity] * item[:product].price
+    end
   end
 
   # GET /orders/1/edit

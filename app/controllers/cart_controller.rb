@@ -3,18 +3,19 @@ class CartController < ApplicationController
 
 
   def create
-    unless session[:cart].include?(@product.id)
-      session[:cart] << @product.id
-      flash[:notice] = "#{@product.name} was added to the cart!"
+    product_id = params[:id].to_i
+    quantity = params[:quantity].to_i
+    unless session[:cart].any? { |item| item["id"] == product_id }
+      session[:cart] << { "id" => product_id, "quantity" => quantity }
+      flash[:notice] = "#{quantity}x #{@product.name} were added to the cart!"
     end
     redirect_to root_path
   end
 
   def destroy
-    if session[:cart].include?(@product.id)
-      session[:cart].delete(@product.id)
-      flash[:notice] = "#{@product.name} was removed from the cart!"
-    end
+    product_id = params[:id].to_i
+    session[:cart].reject! { |item| item["id"] == product_id }
+    flash[:notice] = "#{@product.name} was removed from the cart!"
     redirect_to root_path
   end
 
