@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
-  get '/order_summary', to: 'checkout#summary', as: 'order_summary'
-  post '/create_checkout_session', to: 'checkout#create', as: 'checkout_create'
+  get '/orders/invoice', to: 'orders#invoice', as: 'invoice'
+  post '/invoice/submit', to: 'orders#submit_invoice', as: 'submit_invoice'
+  get '/orders/invoice', to: 'orders#invoice', as: 'order_invoice'
+  get '/order_summary/:id', to: 'orders#summary', as: 'order_summary'
   post "/cart/:id/update_quantity", to: "cart#update_quantity", as: :update_quantity_cart
   get 'search_all', to: 'search#search_all', as: 'search_all'
   resources :pages, except: [ :show ]
   get "/pages/:permalink", to: "pages#permalink", as: "page_permalink"
+
   resources :cart, only: [:create, :destroy]
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)

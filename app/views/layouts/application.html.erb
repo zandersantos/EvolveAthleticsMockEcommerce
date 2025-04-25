@@ -93,9 +93,7 @@
             <hr class="navbar-divider">
               <!-- Checkout Button Outside the Loop -->
               <div class="navbar-item">
-                <%= form_with url: checkout_create_path, method: :post do %>
-                  <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
-                <% end %>
+                <%= link_to "Checkout", order_invoice_path, class: "button is-primary" %>
               </div>
           </div>
         <% end %>

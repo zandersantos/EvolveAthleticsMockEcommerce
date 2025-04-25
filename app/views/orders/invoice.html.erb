@@ -1,0 +1,85 @@
+<h1>Invoice</h1>
+
+<p>Below are the items in your cart:</p>
+
+<table class="table is-bordered is-striped">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Individual Price</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @cart_items.each do |item| %>
+      <tr>
+        <td><%= item[:product].name %></td>
+        <td><%= item[:quantity] %></td>
+        <td><%= number_to_currency(item[:product].price) %></td>
+        <td><%= number_to_currency(item[:quantity] * item[:product].price) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Subtotal: <%= number_to_currency(@cart_items.sum { |item| item[:quantity] * item[:product].price }) %></h2>
+<h3>Taxes:</h3>
+<ul>
+  <li>GST: <%= number_to_currency(@taxes[:gst]) %></li>
+  <li>PST: <%= number_to_currency(@taxes[:pst]) %></li>
+  <li>HST: <%= number_to_currency(@taxes[:hst]) %></li>
+</ul>
+<h2>Total: <%= number_to_currency(@total_price) %></h2>
+
+<hr />
+
+<h2>Enter Your Details</h2>
+
+<%= form_with model: @order, url: submit_invoice_path, method: :post do |f| %>
+  <div class="field">
+    <%= f.label :first_name, "First Name", class: "label" %>
+    <div class="control">
+      <%= f.text_field :first_name, class: "input", required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :last_name, "Last Name", class: "label" %>
+    <div class="control">
+      <%= f.text_field :last_name, class: "input", required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :phone_number, "Phone Number", class: "label" %>
+    <div class="control">
+      <%= f.telephone_field :phone_number, class: "input", required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :email, "Email", class: "label" %>
+    <div class="control">
+      <%= f.email_field :email, class: "input", required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :address, "Address", class: "label" %>
+    <div class="control">
+      <%= f.text_area :address, class: "textarea", rows: 3, required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.label :province, "Province", class: "label" %>
+    <div class="control">
+      <%= f.select :province, options_for_select(["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Northwest Territories", "Nunavut"]), {}, class: "input", required: true %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= f.submit "Submit Invoice", class: "button is-primary" %>
+  </div>
+<% end %>
