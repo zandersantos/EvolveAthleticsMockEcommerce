@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  post "/cart/:id/update_quantity", to: "cart#update_quantity", as: :update_quantity_cart
   get 'search_all', to: 'search#search_all', as: 'search_all'
   resources :pages, except: [ :show ]
   get "/pages/:permalink", to: "pages#permalink", as: "page_permalink"

@@ -28,6 +28,26 @@ class CartController < ApplicationController
     redirect_to root_path
   end
 
+  def update_quantity
+    product = Product.find(params[:id])
+    new_quantity = params[:quantity].to_i
+
+    if new_quantity > 0
+      session[:cart] ||= []
+      item = session[:cart].find { |i| i["id"] == product.id }
+
+      if item
+        item["quantity"] = new_quantity
+      end
+
+      flash[:notice] = "#{product.name} quantity updated."
+    else
+      flash[:alert] = "Quantity must be at least 1."
+    end
+
+    redirect_to root_path
+  end
+
   private
 
   def get_product
