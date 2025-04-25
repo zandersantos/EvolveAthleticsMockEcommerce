@@ -90,13 +90,13 @@
                 <%= button_to "Remove", cart_path(item[:product]), method: :delete, class: "button is-small is-danger ml-2" %>
               </div>
             <% end %>
-<hr class="navbar-divider">
-                  <!-- Checkout Button Outside the Loop -->
-                  <div class="navbar-item">
-                    <%= form_with url: checkout_create_path, method: :post do %>
-                      <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
-                    <% end %>
-                  </div>
+            <hr class="navbar-divider">
+              <!-- Checkout Button Outside the Loop -->
+              <div class="navbar-item">
+                <%= form_with url: checkout_create_path, method: :post do %>
+                  <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
+                <% end %>
+              </div>
           </div>
         <% end %>
       </div>
