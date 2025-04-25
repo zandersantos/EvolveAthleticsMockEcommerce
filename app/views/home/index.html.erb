@@ -6,18 +6,15 @@
   </div>
 </section>
 
-<!-- Columns Section -->
 <section class="section">
   <div class="container">
     <div class="columns">
-      <!-- Products Column -->
       <div class="column">
         <h4 class="title is-4">Products</h4>
         <div class="ml-5">
-          <% @products.each do |product| %> <!-- Use @products instead of @product -->
+          <% @products.each do |product| %>
             <div class="box mb-4">
               <div class="columns is-vcentered">
-                <!-- Image column -->
                 <div class="column is-one-third">
                   <% if product.image.attached? %>
                     <%= image_tag product.image %>
@@ -26,7 +23,6 @@
                   <% end %>
                 </div>
 
-                <!-- Info column -->
                 <div class="column">
                   <p class="title is-5 mb-1">
                     <%= link_to product.name, product %>
@@ -59,9 +55,8 @@
             </div>
           <% end %>
 
-          <!-- Pagination Controls -->
           <div class="mt-4">
-            <%= paginate @products %> <!-- Pagination links -->
+            <%= paginate @products %>
           </div>
 
           <p class="mt-4">

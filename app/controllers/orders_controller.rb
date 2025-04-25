@@ -10,18 +10,32 @@ class OrdersController < ApplicationController
   def show
   end
   def invoice
-    @order = Order.new # Initialize a new order instance
-    @cart_items = cart # Retrieve cart items
-    subtotal = @cart_items.sum { |item| item[:quantity] * item[:product].price }
-    @province = params[:province] || "Alberta" # Default province for demonstration
-    @taxes = calculate_taxes(subtotal, @province) # Calculate taxes
-    @total_price = subtotal + @taxes[:total_tax] # Calculate total price
+    @customer = if params[:customer_id].present?
+                  Customer.find_by(id: params[:customer_id])
+                else
+                  Customer.create(first_name: "Guest", last_name: "User", email_address: "guest@example.com")
+                end
+
+
+    @order = Order.new(customer_id: @customer.id)
+    @cart_items = cart
+
+    subtotal = @cart_items.sum do |item|
+      item[:quantity] * item[:product].price
+    end
+
+    @taxes = calculate_taxes(subtotal, @customer.province)
+    @total_price = subtotal + @taxes[:total_tax]
+
+    render :invoice
   end
   # GET /orders/new
   def new
-      @order = Order.new # Ensure @order is initialized
-      @cart_items = cart # Retrieve items from the session cart
-      @total_price = @cart_items.sum { |item| item[:quantity] * item[:product].price } # Calculate total price
+      @order = Order.new
+      @cart_items = cart
+      @total_price = @cart_items.sum do |item|
+        item[:quantity] * item[:product].price
+      end
   end
 
   # GET /orders/1/edit
@@ -30,10 +44,8 @@ class OrdersController < ApplicationController
 
   # POST /orders or /orders.json
   def create
-    # Collect the cart items
     cart_items = cart
 
-    # Prepare the line items for Stripe
     line_items = cart_items.map do |item|
       {
         price_data: {
@@ -42,13 +54,12 @@ class OrdersController < ApplicationController
             name: item[:product].name,
             description: item[:product].description
           },
-          unit_amount: (item[:product].price * 100).to_i # Price in cents
+          unit_amount: (item[:product].price * 100).to_i
         },
         quantity: item[:quantity]
       }
     end
 
-    # Create the Stripe checkout session
     session = Stripe::Checkout::Session.create(
       payment_method_types: ["card"],
       success_url: checkout_success_url,
@@ -57,7 +68,6 @@ class OrdersController < ApplicationController
       line_items: line_items
     )
 
-    # Redirect the user to Stripe checkout
     redirect_to session.url, allow_other_host: true
   end
 
@@ -84,17 +94,30 @@ class OrdersController < ApplicationController
     end
   end
   def success
-    # We go here if the payment succeeded!
+    @cart = session[:cart] || []
+
+    valid_items = @cart.select do |item|
+      Product.exists?(id: item["id"])
+    end
+
+    valid_items.each do |item|
+      product = Product.find_by(id: item["id"])
+      quantity = item["quantity"].to_i
+
+      if product
+        product.update(stockquantity: product.stockquantity - quantity)
+      end
+    end
+
+    session[:cart] = []
   end
 
   def cancel
-    # Something went wrong!
   end
 
   def submit_invoice
     @order = Order.new(order_params)
     if @order.save
-      # Save the cart items into the OrderDetails table
       cart.each do |item|
         OrderDetail.create(
           order: @order,
@@ -103,7 +126,7 @@ class OrdersController < ApplicationController
           price: item[:product].price
         )
       end
-      # Clear the cart (optional)
+
       session[:cart] = nil
       redirect_to checkout_create_path(order_id: @order.id), notice: "Your invoice has been submitted successfully!"
     else
@@ -118,6 +141,7 @@ class OrdersController < ApplicationController
     params.require(:order).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
   end
 
+  #Hash
   TAX_RATES = {
     "Alberta" => { gst: 0.05, pst: 0, hst: 0 },
     "British Columbia" => { gst: 0.05, pst: 0.07, hst: 0 },
@@ -135,10 +159,17 @@ class OrdersController < ApplicationController
   }
 
   def calculate_taxes(subtotal, province)
-    tax_rate = TAX_RATES[province]
-    gst = subtotal * tax_rate[:gst]
-    pst = subtotal * tax_rate[:pst]
-    hst = subtotal * tax_rate[:hst]
-    { gst: gst, pst: pst, hst: hst, total_tax: gst + pst + hst }
+    tax_rate = TAX_RATES[province] || {}
+    gst = subtotal * (tax_rate[:gst] || 0)
+    pst = subtotal * (tax_rate[:pst] || 0)
+    hst = subtotal * (tax_rate[:hst] || 0)
+
+    {
+      gst: gst,
+      pst: pst,
+      hst: hst,
+      total_tax: gst + pst + hst
+    }
   end
+
 end

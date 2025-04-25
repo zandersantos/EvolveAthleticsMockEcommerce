@@ -1,7 +1,5 @@
 <h1>Invoice</h1>
 
-<p>Below are the items in your cart:</p>
-
 <table class="table is-bordered is-striped">
   <thead>
     <tr>
@@ -16,25 +14,24 @@
       <tr>
         <td><%= item[:product].name %></td>
         <td><%= item[:quantity] %></td>
-        <td><%= number_to_currency(item[:product].price) %></td>
-        <td><%= number_to_currency(item[:quantity] * item[:product].price) %></td>
+        <td>$<%= item[:product].price %></td>
+        <td><%= item[:quantity] * item[:product].price %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<h2>Subtotal: <%= number_to_currency(@cart_items.sum { |item| item[:quantity] * item[:product].price }) %></h2>
-<h3>Taxes:</h3>
+<% subtotal = 0 %>
+<% @cart_items.each do |item| %>
+  <% subtotal += item[:quantity] * item[:product].price %>
+<% end %>
+<h2>Subtotal: $<%= subtotal %></h2><h3>Taxes:</h3>
 <ul>
-  <li>GST: <%= number_to_currency(@taxes[:gst]) %></li>
-  <li>PST: <%= number_to_currency(@taxes[:pst]) %></li>
-  <li>HST: <%= number_to_currency(@taxes[:hst]) %></li>
+  <li>GST: $<%= @taxes[:gst] %></li>
+  <li>PST: $<%= @taxes[:pst] %></li>
+  <li>HST: $<%= @taxes[:hst] %></li>
 </ul>
-<h2>Total: <%= number_to_currency(@total_price) %></h2>
-
-<hr />
-
-<h2>Enter Your Details</h2>
+<h2>Total: $<%= @total_price %></h2>
 
 <%= form_with model: @order, url: submit_invoice_path, method: :post do |f| %>
   <div class="field">
@@ -75,7 +72,8 @@
   <div class="field">
     <%= f.label :province, "Province", class: "label" %>
     <div class="control">
-      <%= f.select :province, options_for_select(["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Northwest Territories", "Nunavut"]), {}, class: "input", required: true %>
+      <%= f.select :province,
+      options_for_select(["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon", "Northwest Territories", "Nunavut"]), {}, class: "input", required: true %>
     </div>
   </div>
 

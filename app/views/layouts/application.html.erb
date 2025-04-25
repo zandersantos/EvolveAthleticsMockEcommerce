@@ -11,9 +11,6 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
@@ -30,7 +27,6 @@
     </a>
   </div>
 
-  <!-- 🔍 Search Bar -->
   <div class="navbar-item">
     <div class="search-bar mb-5">
       <%= form_with url: search_all_path, method: :get, local: true do |form| %>
@@ -69,7 +65,7 @@
 
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link">
-          🛒 Cart <%= cart.present? ? "(#{cart.size})" : "" %>
+          🛒 Cart<%= " (#{cart.size})" if cart.present? %>
         </a>
 
         <% if cart.present? %>
@@ -78,7 +74,9 @@
               <div class="navbar-item is-flex is-justify-content-space-between is-align-items-center">
                 <%= form_with url: update_quantity_cart_path(item[:product]), method: :post, local: true do |f| %>
                   <div class="field is-grouped">
-                    <span class="mr-2"><%= item[:product].name %></span>
+                    <span class="mr-2">
+                      <%= item[:product].name %>
+                    </span>
                     <div class="control">
                       <%= f.number_field :quantity, value: item[:quantity], min: 1, class: "input is-small", style: "width: 60px;" %>
                     </div>
@@ -91,9 +89,13 @@
               </div>
             <% end %>
             <hr class="navbar-divider">
-              <!-- Checkout Button Outside the Loop -->
               <div class="navbar-item">
-                <%= link_to "Checkout", order_invoice_path, class: "button is-primary" %>
+                <%= link_to "Invoice", order_invoice_path, class: "button is-primary" %>
+              </div>
+              <div class="navbar-item">
+                <%= form_with url: checkout_create_path, method: :post do %>
+                  <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
+                <% end %>
               </div>
           </div>
         <% end %>
@@ -106,14 +108,14 @@
       <div class="container">
         <% flash.each do |type, msg| %>
           <% bulma_class = case type.to_sym
-                           when :notice then "is-success"
-                           when :alert then "is-danger"
-                           else "is-info"
-          end %>
-          <div class="notification <%= bulma_class %>">
-            <%= msg %>
-          </div>
-        <% end %>
+                   when :notice then "is-success"
+                   when :alert then "is-danger"
+                   else "is-info"
+                   end %>
+            <div class="notification <%= bulma_class %>">
+              <%= msg %>
+            </div>
+          <% end %>
 
         <%= yield %>
         <%= render partial: "common/footer" %>
