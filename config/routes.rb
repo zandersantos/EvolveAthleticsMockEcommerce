@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :customers
   get '/orders/invoice', to: 'orders#invoice', as: 'invoice'
   post '/invoice/submit', to: 'orders#submit_invoice', as: 'submit_invoice'
   get '/orders/invoice', to: 'orders#invoice', as: 'order_invoice'
