@@ -4,13 +4,9 @@ class Customer < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  def email_required?
-    false
-  end
+  validates :email, presence: true, uniqueness: { case_sensitive: false }
 
-  def email
-    self.email_address
-  end
+
 
   has_many :orders
 end
