@@ -1,50 +1,77 @@
-<div class="content">
-  <h2 class="title is-3">
-  <% if @category_id.present? && @query.present? && @query.downcase != Category.find(@category_id).name.downcase %>
-    Search Results for "<%= @query %>" in "<%= Category.find(@category_id).name %>"
-  <% elsif @category_id.present? %>
-    Showing products in "<%= Category.find(@category_id).name %>"
-  <% elsif @query.present? %>
-    Search Results for "<%= @query %>"
-  <% else %>
-    All Products
-  <% end %>
-</h2>
+<% content_for :html_title do %>
+  Search All
+<% end %>
 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-  <% if @products.any? %>
-    <div class="box">
-      <h3 class="title is-4">Products</h3>
-      <ul>
-        <% @products.each do |product| %>
-          <li>
-            <%= link_to product.name, product_path(product), class: "has-text-link" %>
-            - <strong><%= number_to_currency(product.price) %></strong>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  <% else %>
-    <div class="notification is-warning">
-      No results found.
-    </div>
-  <% end %>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
 
-  <% if @categories.any? %>
-    <div class="box">
-      <h3 class="title is-4">Categories</h3>
-      <ul>
-        <% @categories.each do |category| %>
-          <li>
-            <%= link_to category.name, category_path(category), class: "has-text-link" %>
-          </li>
-        <% end %>
-      </ul>
+  <body>
+    <div class="mb-4 p-4">
+      <%= link_to "Back to Products", products_path, class: "button is-link" %>
     </div>
-  <% else %>
-    <div class="notification is-warning">
-      No results found.
-    </div>
-  <% end %>
 
-</div>
+    <section class="section">
+      <div class="container">
+        <div class="content">
+          <h2 class="title is-3">
+            <% if @category_id.present? && @query.present? && @query.downcase != Category.find(@category_id).name.downcase %>
+              Search Results for "<%= @query %>" in "<%= Category.find(@category_id).name %>"
+            <% elsif @category_id.present? %>
+              Showing products in "<%= Category.find(@category_id).name %>"
+            <% elsif @query.present? %>
+              Search Results for "<%= @query %>"
+            <% else %>
+              All Products
+            <% end %>
+          </h2>
+
+          <% if @products.any? %>
+            <div class="box">
+              <h3 class="title is-4">Products</h3>
+              <ul>
+                <% @products.each do |product| %>
+                  <li>
+                    <%= link_to product.name, product_path(product), class: "has-text-link" %>
+                    - <strong><%= number_to_currency(product.price) %></strong>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% else %>
+            <div class="notification is-warning">
+              No results found.
+            </div>
+          <% end %>
+
+          <% if @categories.any? %>
+            <div class="box">
+              <h3 class="title is-4">Categories</h3>
+              <ul>
+                <% @categories.each do |category| %>
+                  <li>
+                    <%= link_to category.name, category_path(category), class: "has-text-link" %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% else %>
+            <div class="notification is-warning">
+              No results found.
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
