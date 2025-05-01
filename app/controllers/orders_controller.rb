@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   before_action :set_order, only: %i[ show edit update destroy ]
-
+  before_action :authenticate_customer!, only: [:invoice]
   # GET /orders or /orders.json
   def index
     @orders = Order.all
@@ -10,25 +10,26 @@ class OrdersController < ApplicationController
   def show
   end
   def invoice
-    @customer = if params[:customer_id].present?
-                  Customer.find_by(id: params[:customer_id])
-                else
-                  Customer.create(first_name: "Guest", last_name: "User", email_address: "guest@example.com")
-                end
+    @customer = current_customer
+    @province = @customer.province
 
-
-    @order = Order.new(customer_id: @customer.id)
+    # Fetch cart items
     @cart_items = cart
 
-    subtotal = @cart_items.sum do |item|
-      item[:quantity] * item[:product].price
-    end
+    # Calculate subtotal
+    subtotal = @cart_items.sum { |item| item[:quantity] * item[:product].price }
 
-    @taxes = calculate_taxes(subtotal, @customer.province)
+    # Calculate taxes based on the updated province
+    @taxes = calculate_taxes(subtotal, @province)
+
+    # Calculate total price
     @total_price = subtotal + @taxes[:total_tax]
-
-    render :invoice
   end
+
+
+
+
+
   # GET /orders/new
   def new
       @order = Order.new
@@ -116,21 +117,28 @@ class OrdersController < ApplicationController
   end
 
   def submit_invoice
-    @order = Order.new(order_params)
-    if @order.save
-      cart.each do |item|
-        OrderDetail.create(
-          order: @order,
-          product: item[:product],
-          quantity: item[:quantity],
-          price: item[:product].price
-        )
-      end
+    @customer = Customer.find_or_initialize_by(id: params[:customer][:id])
+    if @customer.update(customer_params)
+      @order = Order.new(customer: @customer)
 
-      session[:cart] = nil
-      redirect_to checkout_create_path(order_id: @order.id), notice: "Your invoice has been submitted successfully!"
+      if @order.save
+        cart.each do |item|
+          OrderDetail.create(
+            order: @order,
+            product: item[:product],
+            quantity: item[:quantity],
+            price: item[:product].price
+          )
+        end
+
+        session[:cart] = nil
+        redirect_to checkout_create_path(order_id: @order.id), notice: "Your invoice has been submitted successfully!"
+      else
+        flash[:alert] = "There was an error saving your order."
+        render :invoice
+      end
     else
-      flash[:alert] = "There was an error saving your details. Please try again."
+      flash[:alert] = "There was an error saving customer details."
       render :invoice
     end
   end
@@ -138,6 +146,10 @@ class OrdersController < ApplicationController
   private
 
   def order_params
+    params.require(:order).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
+  end
+
+  def customer_params
     params.require(:order).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
   end
 

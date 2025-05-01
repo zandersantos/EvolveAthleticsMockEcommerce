@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
+  post "/customers/update_province", to: "customers#update_province", as: :update_province
   devise_for :customers
-  get '/orders/invoice', to: 'orders#invoice', as: 'invoice'
-  post '/invoice/submit', to: 'orders#submit_invoice', as: 'submit_invoice'
   get '/orders/invoice', to: 'orders#invoice', as: 'order_invoice'
+  post '/invoice/submit', to: 'orders#submit_invoice', as: 'submit_invoice'
   get '/order_summary/:id', to: 'orders#summary', as: 'order_summary'
   post "/cart/:id/update_quantity", to: "cart#update_quantity", as: :update_quantity_cart
   post "/orders/create", to: "orders#create", as: "checkout_create"

@@ -1,70 +1,48 @@
 class CustomersController < ApplicationController
-  before_action :set_customer, only: %i[ show edit update destroy ]
+  # Callback to set the current customer for relevant actions
+  before_action :set_customer, only: %i[edit update update_province]
+  before_action :set_provinces, only: %i[edit update]
 
-  # GET /customers or /customers.json
-  def index
-    @customers = Customer.all
-  end
-
-  # GET /customers/1 or /customers/1.json
-  def show
-  end
-
-  # GET /customers/new
-  def new
-    @customer = Customer.new
-  end
-
-  # GET /customers/1/edit
   def edit
+    # @customer and @provinces are set here for editing
   end
 
-  # POST /customers or /customers.json
-  def create
-    @customer = Customer.new(customer_params)
-
-    respond_to do |format|
-      if @customer.save
-        format.html { redirect_to @customer, notice: "Customer was successfully created." }
-        format.json { render :show, status: :created, location: @customer }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @customer.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /customers/1 or /customers/1.json
   def update
-    respond_to do |format|
-      if @customer.update(customer_params)
-        format.html { redirect_to @customer, notice: "Customer was successfully updated." }
-        format.json { render :show, status: :ok, location: @customer }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @customer.errors, status: :unprocessable_entity }
-      end
+    if @customer.update(customer_params)
+      redirect_to profile_path, notice: "Account updated successfully."
+    else
+      flash.now[:alert] = "There was a problem updating your account."
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /customers/1 or /customers/1.json
-  def destroy
-    @customer.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to customers_path, status: :see_other, notice: "Customer was successfully destroyed." }
-      format.json { head :no_content }
+  # Action to update province directly
+  def update_province
+    if @customer.update(province: params[:province])
+      redirect_to order_invoice_path, notice: "Province updated successfully."
+    else
+      flash[:alert] = "There was an error updating the province."
+      redirect_to order_invoice_path, status: :unprocessable_entity
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_customer
-      @customer = Customer.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def customer_params
-      params.expect(customer: [ :first_name, :last_name, :email_address, :phone_number ])
-    end
+  def set_customer
+    # Ensure we load the current customer
+    @customer = current_customer # Assumes Devise or similar authentication
+  end
+
+  def set_provinces
+    # Populate list of provinces for forms
+    @provinces = ["Alberta", "British Columbia", "Manitoba", "New Brunswick",
+                  "Newfoundland and Labrador", "Nova Scotia", "Ontario",
+                  "Prince Edward Island", "Quebec", "Saskatchewan",
+                  "Yukon", "Northwest Territories", "Nunavut"]
+  end
+
+  def customer_params
+    # Strong parameters to allow permitted attributes
+    params.require(:customer).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
+  end
 end

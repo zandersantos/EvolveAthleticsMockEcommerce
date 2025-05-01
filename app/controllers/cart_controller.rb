@@ -1,7 +1,6 @@
 class CartController < ApplicationController
   before_action :get_product, only: [:create, :destroy]
 
-
   def create
     product_id = params[:id].to_i
     quantity = params[:quantity].to_i
@@ -45,6 +44,12 @@ class CartController < ApplicationController
     end
 
     redirect_to root_path
+  end
+
+  # New action for checkout
+  def checkout
+    # This will be the page where the user reviews the cart and proceeds to invoice.
+    # Here you can also handle any additional logic like showing customer details.
   end
 
   private
