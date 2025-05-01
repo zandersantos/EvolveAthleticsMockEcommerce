@@ -21,134 +21,134 @@
   <body>
     <header>
       <nav class="navbar is-light" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item" href="/">
-      <strong>Evolve Athletics</strong>
-    </a>
-  </div>
-
-  <div class="navbar-item">
-  <div class="search-bar mb-5">
-    <!-- First Search Bar for Query (Products and Categories) -->
-    <%= form_with url: search_all_path, method: :get, local: true do |form| %>
-      <div class="field has-addons">
-        <div class="control">
-          <%= form.text_field :query, placeholder: "Search for products or categories...", class: "input" %>
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <strong>Evolve Athletics</strong>
+          </a>
         </div>
-        <div class="control">
-          <%= form.submit "Search", class: "button is-primary" %>
-        </div>
-      </div>
-    <% end %>
-  </div>
 
-  <div class="search-bar mb-5">
-    <!-- Second Search Bar for Category Search -->
-    <%= form_with url: search_by_category_path, method: :get, local: true do |form| %>
-      <div class="field has-addons">
-        <div class="control">
-          <%= form.select :category_id, options_from_collection_for_select(@all_categories, :id, :name), { include_blank: "Choose a category" }, class: "input" %>
-        </div>
-        <div class="control">
-          <%= form.submit "Search", class: "button is-primary" %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-</div>
-
-
-
-
-
-    <div class="buttons mt-2 ml-2">
-      <%= link_to "All Products", products_path, class: "button is-info is-small" %>
-      <%= link_to "All Categories", categories_path, class: "button is-info is-small" %>
-    </div>
-  </div>
-
-  <div class="navbar-menu">
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="field is-grouped">
-          <p class="control">
-            <%= button_to "About Us", page_permalink_path("about"), method: :get, class: "button is-small is-link" %>
-          </p>
-          <p class="control">
-            <%= button_to "Contact", page_permalink_path("contact"), method: :get, class: "button is-small is-link" %>
-          </p>
-          <p class="control">
-            <%= button_to "Admin", new_admin_user_session_path, method: :get, class: "button is-small is-link" %>
-          </p>
-          <% if customer_signed_in? %>
-            <p class="control">
-              <%= link_to "My Account", edit_customer_registration_path, class: "button is-small is-success" %>
-            </p>
-            <p class="control">
-              <%= button_to "Sign Out", destroy_customer_session_path, method: :delete %>
-            </p>
-          <% else %>
-            <p class="control">
-              <%= link_to "Login", new_customer_session_path, class: "button is-small is-link" %>
-            </p>
-          <% end %>
-        </div>
-      </div>
-
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
-          🛒 Cart<%= " (#{cart.size})" if cart.present? %>
-        </a>
-
-        <% if cart.present? %>
-          <div class="navbar-dropdown is-right">
-            <% cart.each do |item| %>
-              <div class="navbar-item is-flex is-justify-content-space-between is-align-items-center">
-                <%= form_with url: update_quantity_cart_path(item[:product]), method: :post, local: true do |f| %>
-                  <div class="field is-grouped">
-                    <span class="mr-2">
-                      <%= item[:product].name %>
-                    </span>
-                    <div class="control">
-                      <%= f.number_field :quantity, value: item[:quantity], min: 1, class: "input is-small", style: "width: 60px;" %>
-                    </div>
-                    <div class="control">
-                      <%= f.submit "Update", class: "button is-small is-info ml-2" %>
-                    </div>
-                  </div>
-                <% end %>
-                <%= button_to "Remove", cart_path(item[:product]), method: :delete, class: "button is-small is-danger ml-2" %>
+        <div class="navbar-item">
+          <div class="search-bar mb-5">
+            <!-- First Search Bar for Normal Query (Products and Categories) -->
+            <%= form_with url: search_all_path, method: :get, local: true do |form| %>
+              <div class="field has-addons">
+                <div class="control">
+                  <%= form.text_field :query, placeholder: "Search for products or categories...", class: "input" %>
+                </div>
+                <div class="control">
+                  <%= form.submit "Search", class: "button is-primary" %>
+                </div>
               </div>
             <% end %>
-            <hr class="navbar-divider">
-              <div class="navbar-item">
-                <%= link_to "Invoice", order_invoice_path, class: "button is-primary" %>
+          </div>
+
+          <div class="search-bar mb-5">
+            <!-- Second Search Bar for Category Search using a Dropdown -->
+            <%= form_with url: search_by_category_path, method: :get, local: true do |form| %>
+              <div class="field has-addons">
+                <div class="control">
+                  <!-- options_from_collection_for_select = The options in the Dropdown. include_blank: = SearchBar placeholder-->
+                  <%= form.select :category_id, options_from_collection_for_select(@all_categories, :id, :name), { include_blank: "Choose a category" }, class: "input" %>
+                </div>
+                <div class="control">
+                  <%= form.submit "Search", class: "button is-primary" %>
+                </div>
               </div>
-              <div class="navbar-item">
-                <%= form_with url: checkout_create_path, method: :post do %>
-                  <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="buttons mt-2 ml-2">
+          <%= link_to "All Products", products_path, class: "button is-info is-small" %>
+          <%= link_to "All Categories", categories_path, class: "button is-info is-small" %>
+        </div>
+
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="field is-grouped">
+                <p class="control">
+                  <%= button_to "About Us", page_permalink_path("about"), method: :get, class: "button is-small is-link" %>
+                </p>
+                <p class="control">
+                  <%= button_to "Contact", page_permalink_path("contact"), method: :get, class: "button is-small is-link" %>
+                </p>
+                <p class="control">
+                  <%= button_to "Admin", new_admin_user_session_path, method: :get, class: "button is-small is-link" %>
+                </p>
+                <% if customer_signed_in? %>
+                  <p class="control">
+                    <%= link_to "My Account", edit_customer_registration_path, class: "button is-small is-success" %>
+                  </p>
+                  <p class="control">
+                    <%= button_to "Sign Out", destroy_customer_session_path, method: :delete %>
+                  </p>
+                <% else %>
+                  <p class="control">
+                    <%= link_to "Login", new_customer_session_path, class: "button is-small is-link" %>
+                  </p>
                 <% end %>
               </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</nav>
+            </div>
 
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                🛒 Cart<%= " (#{cart.size})" if cart.present? %>
+              </a>
+
+              <% if cart.present? %>
+                <div class="navbar-dropdown is-right">
+                  <% cart.each do |item| %>
+                    <div class="navbar-item is-flex is-justify-content-space-between is-align-items-center">
+                      <%= form_with url: update_quantity_cart_path(item[:product]), method: :post, local: true do |f| %>
+                        <div class="field is-grouped">
+                          <span class="mr-2">
+                            <%= item[:product].name %>
+                          </span>
+                          <div class="control">
+                            <%= f.number_field :quantity, value: item[:quantity], min: 1, class: "input is-small", style: "width: 60px;" %>
+                          </div>
+                          <div class="control">
+                            <%= f.submit "Update", class: "button is-small is-info ml-2" %>
+                          </div>
+                        </div>
+                      <% end %>
+                      <%= button_to "Remove", cart_path(item[:product]), method: :delete, class: "button is-small is-danger ml-2" %>
+                    </div>
+                  <% end %>
+
+                  <hr class="navbar-divider">
+
+                  <div class="navbar-item">
+                    <%= link_to "Invoice", order_invoice_path, class: "button is-primary" %>
+                  </div>
+                  <div class="navbar-item">
+                    <%= form_with url: checkout_create_path, method: :post do %>
+                      <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
     <section class="section">
       <div class="container">
+        <!-- Bulma Flash notifications -->
         <% flash.each do |type, msg| %>
           <% bulma_class = case type.to_sym
-                   when :notice then "is-success"
-                   when :alert then "is-danger"
-                   else "is-info"
-                   end %>
-            <div class="notification <%= bulma_class %>">
-              <%= msg %>
-            </div>
-          <% end %>
+            when :notice then "is-success"
+            when :alert then "is-danger"
+            else "is-info"
+          end %>
+          <div class="notification <%= bulma_class %>">
+            <%= msg %>
+          </div>
+        <% end %>
 
+        <!-- Render the Footer-->
         <%= yield %>
         <%= render partial: "common/footer" %>
       </div>
