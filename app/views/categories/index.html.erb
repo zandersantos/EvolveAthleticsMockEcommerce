@@ -1,16 +1,61 @@
-<p style="color: green"><%= notice %></p>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-<% content_for :title, "Categories" %>
+    <title>All Categories</title>
 
-<h1 class="title is-2">All Categories</h1>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
 
-<div id="categories">
-  <% @categories.each do |category| %>
-    <%= render category %>
-    <p>
-      <%= link_to "Show this category", category %>
-    </p>
-  <% end %>
-</div>
+  <body>
+    <section class="section">
+      <div class="container">
+        <p style="color: green"><%= notice %></p>
 
-<%= link_to "New category", new_category_path %>
+        <h1 class="title is-2">All Categories</h1>
+
+        <div id="categories">
+          <% @categories.each do |category| %>
+            <div class="box mb-4">
+              <div class="columns is-vcentered">
+                <div class="column is-one-third">
+                  <% if category.image.attached? %>
+                    <%= image_tag category.image, class: "image is-128x128" %>
+                  <% else %>
+                    <p class="has-text-grey-light">No image available</p>
+                  <% end %>
+                </div>
+
+                <div class="column">
+                  <p class="title is-5 mb-1">
+                    <%= link_to category.name, category %>
+                  </p>
+
+                  <p class="content mb-2 has-text-grey-dark">
+                    <%= category.description %>
+                  </p>
+
+                  <p>
+                    <%= link_to "Show this category", category, class: "button is-primary" %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Kaminari pagination controls -->
+        <div class="mt-4">
+          <%= paginate @categories %>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
