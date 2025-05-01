@@ -89,23 +89,28 @@ class OrdersController < ApplicationController
     end
   end
   def success
-    @cart = session[:cart] || []
+    # Retrieve the completed order from session
+    order = Order.find_by(id: session[:last_order_id])
 
-    valid_items = @cart.select do |item|
-      Product.exists?(id: item["id"])
+    if order.nil?
+      redirect_to root_path, alert: "Order not found."
+      return
     end
 
-    valid_items.each do |item|
-      product = Product.find_by(id: item["id"])
-      quantity = item["quantity"].to_i
+    # Update stockquantity for each product in the order
+    order.order_details.each do |detail|
+      product = detail.product
+      next unless product
 
-      if product
-        product.update(stockquantity: product.stockquantity - quantity)
-      end
+      new_quantity = product.stockquantity - detail.quantity
+      product.update(stockquantity: new_quantity)
     end
 
+    # Clear cart and session reference to the order
     session[:cart] = []
+    session[:last_order_id] = nil
   end
+
 
   def cancel
   end
@@ -164,6 +169,7 @@ class OrdersController < ApplicationController
         total: item[:quantity] * item[:product].price,
         product_id: item[:product].id  # Explicitly pass the product_id
       )
+      session[:last_order_id] = order.id
     end
 
     # Clear cart after order is placed
