@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-
+  get '/customers/:id/orders', to: 'orders#customer_index', as: 'customer_orders'
   post "/customers/update_province", to: "customers#update_province", as: :update_province
   devise_for :customers
   get '/orders/invoice', to: 'orders#invoice', as: 'order_invoice'

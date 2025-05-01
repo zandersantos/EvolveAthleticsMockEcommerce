@@ -1,0 +1,20 @@
+<h2>Past Orders for <%= @customer.first_name %> <%= @customer.last_name %></h2>
+
+<% if @orders.any? %>
+  <% @orders.each do |order| %>
+    <div class="box mb-4">
+      <h3>Order ID: <%= order.id %> | Date: <%= order.created_at.strftime("%B %d, %Y") %></h3>
+      <ul>
+        <% order.order_details.each do |detail| %>
+          <li>
+            <strong><%= detail.product.name %></strong> - Quantity: <%= detail.quantity %> - Price at Purchase: $<%= detail.price_at_purchase %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% else %>
+  <p>No past orders found.</p>
+<% end %>
+
+<%= link_to "Back to My Account", edit_customer_registration_path, class: "button" %>

@@ -114,6 +114,11 @@ class OrdersController < ApplicationController
 
   def cancel
   end
+  def customer_index
+    @customer = Customer.find(params[:id])
+    @orders = @customer.orders.includes(:order_details => :product).order(created_at: :desc)
+  end
+
 
   # In your OrdersController
   def submit_invoice
