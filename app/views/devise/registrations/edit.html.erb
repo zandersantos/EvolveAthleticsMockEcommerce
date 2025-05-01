@@ -12,7 +12,6 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   </head>
 
@@ -31,7 +30,7 @@
         <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
           <%= render "devise/shared/error_messages", resource: resource %>
 
-          <!-- Custom fields -->
+          <!-- /br = line break-->
           <div class="field">
             <%= f.label :first_name %><br />
             <%= f.text_field :first_name, autofocus: true, class: "input" %>
