@@ -1,7 +1,3 @@
-<% content_for :html_title do %>
-  Past Orders for <%= @customer.first_name %> <%= @customer.last_name %>
-<% end %>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,11 +8,11 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   </head>
 
   <body>
+    <!-- BreadCrumb that goes back to My Account Section-->
     <div class="mb-4 p-4">
       <%= link_to "Back", edit_customer_registration_path, class: "button is-link" %>
     </div>
@@ -46,6 +42,7 @@
                 <% end %>
               </ul>
 
+              <!-- Get the Taxes from the OrderController -->
               <% gst = order.instance_variable_get(:@taxes)[:gst] %>
               <% pst = order.instance_variable_get(:@taxes)[:pst] %>
               <% hst = order.instance_variable_get(:@taxes)[:hst] %>

@@ -1,26 +1,45 @@
-<h1 class="title is-3">Your Order</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Your Order | Evolve Athletics</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-<table class="table is-striped is-fullwidth">
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Individual Price</th>
-      <th>Total Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @cart_items.each do |item| %>
-      <tr>
-        <td><%= item[:product].name %></td>
-        <td><%= item[:quantity] %></td>
-        <td>$<%= item[:product].price %></td>
-        <td>$<%= item[:quantity] * item[:product].price %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
 
-<h2 class="title is-4">Order Total: $<%= @total_price %></h2>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3">Your Order</h1>
 
-<%= button_to "Confirm Order", orders_path, method: :post, class: "button is-success" %>
+        <table class="table is-striped is-fullwidth">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Individual Price</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @cart_items.each do |item| %>
+              <tr>
+                <td><%= item[:product].name %></td>
+                <td><%= item[:quantity] %></td>
+                <td>$<%= item[:product].price %></td>
+                <td>$<%= item[:quantity] * item[:product].price %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <h2 class="title is-4">Order Total: $<%= @total_price %></h2>
+
+        <%= button_to "Confirm Order", orders_path, method: :post, class: "button is-success" %>
+      </div>
+    </section>
+  </body>
+</html>

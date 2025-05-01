@@ -1,6 +1,25 @@
-<div class="has-text-centered">
-  <h1 class="title is-3 mt-4">Thank You for Your Mone-... Purchase!</h1>
-  <p class="subtitle is-5">Your order was successfully completed. </p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Order Complete | Evolve Athletics</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-  <%= link_to "Return to Homepage", root_path, class: "button is-primary mt-5" %>
-</div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
+
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="has-text-centered">
+          <h1 class="title is-3 mt-4">Thank You for Your Mone-... Purchase!</h1>
+          <p class="subtitle is-5">Your order was successfully completed.</p>
+
+          <%= link_to "Return to Homepage", root_path, class: "button is-primary mt-5" %>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

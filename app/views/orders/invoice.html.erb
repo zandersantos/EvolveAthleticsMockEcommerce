@@ -1,87 +1,108 @@
-<h1>Invoice</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Invoice | Evolve Athletics</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-<p>Below are the items in your cart:</p>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
 
-<!-- Cart Items Table -->
-<% if session[:cart].present? %>
-  <table class="table is-bordered is-striped">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Individual Price</th>
-        <th>Subtotal</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% session[:cart].each do |item| %>
-        <% product = Product.find_by(id: item["id"]) %>
-        <% if product %>
-          <tr>
-            <td><%= product.name %></td>
-            <td><%= item["quantity"] %></td>
-            <td><%= number_to_currency(product.price) %></td>
-            <td><%= number_to_currency(product.price * item["quantity"]) %></td>
-          </tr>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3">Invoice</h1>
+
+        <p>Below are the items in your cart:</p>
+
+        <!-- Display all Cart Times in a Table -->
+        <% if session[:cart].present? %>
+          <table class="table is-bordered is-striped">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Individual Price</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% session[:cart].each do |item| %>
+                <% product = Product.find_by(id: item["id"]) %>
+                <% if product %>
+                  <tr>
+                    <td><%= product.name %></td>
+                    <td><%= item["quantity"] %></td>
+                    <td><%= number_to_currency(product.price) %></td>
+                    <td><%= number_to_currency(product.price * item["quantity"]) %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+
+          <!-- Calculate the SubTotal -->
+          <%
+            subtotal = session[:cart].sum do |item|
+              product = Product.find_by(id: item["id"])
+              product ? product.price * item["quantity"] : 0
+            end
+          %>
+          <h2>Subtotal: <%= number_to_currency(subtotal) %></h2>
+
+          <!-- Taxes Section -->
+          <h3>Taxes:</h3>
+          <ul>
+            <li>GST: <%= number_to_currency(@taxes[:gst]) %></li>
+            <li>PST: <%= number_to_currency(@taxes[:pst]) %></li>
+            <li>HST: <%= number_to_currency(@taxes[:hst]) %></li>
+          </ul>
+
+          <!-- Display the Total Price -->
+          <h2>Total: <%= number_to_currency(@total_price) %></h2>
         <% end %>
-      <% end %>
-    </tbody>
-  </table>
+        <hr />
 
-  <!-- Subtotal Calculation -->
-  <% subtotal = session[:cart].sum { |item| Product.find_by(id: item["id"]).price * item["quantity"] } %>
-  <h2>Subtotal: <%= number_to_currency(subtotal) %></h2>
+        <!-- Display Province Selection -->
+        <%= form_with url: update_province_path, method: :post, local: true do |f| %>
+          <div class="field">
+            <label class="label">Select Province for this Order!</label>
+            <div class="control">
+              <!-- Hard Code what provinces can be chosen-->
+              <%= select_tag :province,
+                options_for_select(
+                  ["Alberta", "British Columbia", "Manitoba", "New Brunswick",
+                   "Newfoundland and Labrador", "Nova Scotia", "Ontario",
+                   "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon",
+                   "Northwest Territories", "Nunavut"],
+                   @province
+                ),
+                class: "input", required: true %>
+            </div>
+          </div>
+          <div class="control mt-2">
+            <%= submit_tag "Update Province", class: "button is-info" %>
+          </div>
+        <% end %>
 
-  <!-- Taxes -->
-  <h3>Taxes:</h3>
-  <ul>
-    <li>GST: <%= number_to_currency(@taxes[:gst]) %></li>
-    <li>PST: <%= number_to_currency(@taxes[:pst]) %></li>
-    <li>HST: <%= number_to_currency(@taxes[:hst]) %></li>
-  </ul>
+        <!-- Customer Details (Should be Pre-Filled) -->
+        <h3>Customer Details</h3>
+        <p><strong>Name:</strong> <%= @customer.first_name %> <%= @customer.last_name %></p>
+        <p><strong>Email:</strong> <%= @customer.email %></p>
+        <p><strong>Phone Number:</strong> <%= @customer.phone_number %></p>
+        <p><strong>Address:</strong> <%= @customer.address %></p>
+        <p><strong>Province:</strong> <%= @customer.province %></p>
 
-  <!-- Total Price -->
-  <h2>Total: <%= number_to_currency(@total_price) %></h2>
-<% else %>
-  <p>Your cart is empty. Please add items to proceed.</p>
-<% end %>
-
-<hr />
-
-<!-- Province Picker Form -->
-<%= form_with url: update_province_path, method: :post, local: true do |f| %>
-  <div class="field">
-    <label class="label">Select Province for this Order!</label>
-    <div class="control">
-      <%= select_tag :province,
-        options_for_select(
-          ["Alberta", "British Columbia", "Manitoba", "New Brunswick",
-           "Newfoundland and Labrador", "Nova Scotia", "Ontario",
-           "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon",
-           "Northwest Territories", "Nunavut"],
-           @province
-        ),
-        class: "input", required: true %>
-    </div>
-  </div>
-  <div class="control mt-2">
-    <%= submit_tag "Update Province", class: "button is-info" %>
-  </div>
-<% end %>
-
-<!-- Customer Details (Pre-Filled) -->
-<h3>Customer Details</h3>
-<p><strong>Name:</strong> <%= @customer.first_name %> <%= @customer.last_name %></p>
-<p><strong>Email:</strong> <%= @customer.email %></p>
-<p><strong>Phone Number:</strong> <%= @customer.phone_number %></p>
-<p><strong>Address:</strong> <%= @customer.address %></p>
-<p><strong>Province:</strong> <%= @customer.province %></p>
-
-<!-- Submit Invoice Form -->
-<%= form_with url: submit_invoice_path, method: :post, local: true do |f| %>
-  <%= hidden_field_tag :customer_id, @customer.id %> <!-- Ensure this is passed to the controller -->
-
-  <div class="field">
-    <%= submit_tag "Submit Invoice", class: "button is-primary" %>
-  </div>
-<% end %>
+        <!-- Submit Invoice and go to Stripe Session -->
+        <%= form_with url: submit_invoice_path, method: :post, local: true do |f| %>
+          <%= hidden_field_tag :customer_id, @customer.id %>
+          <div class="field">
+            <%= submit_tag "Submit Invoice", class: "button is-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </body>
+</html>
