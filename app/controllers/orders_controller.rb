@@ -117,7 +117,20 @@ class OrdersController < ApplicationController
   def customer_index
     @customer = Customer.find(params[:id])
     @orders = @customer.orders.includes(:order_details => :product).order(created_at: :desc)
+
+    @orders.each do |order|
+      total_price = 0
+      order.order_details.each do |detail|
+        total_price += detail.price_at_purchase * detail.quantity
+      end
+
+      # Calculate taxes for each order
+      taxes = calculate_taxes(total_price, @customer.province)
+
+      order.instance_variable_set(:@taxes, taxes)
+    end
   end
+
 
 
   # In your OrdersController

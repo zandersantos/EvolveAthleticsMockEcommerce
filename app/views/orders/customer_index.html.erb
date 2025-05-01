@@ -5,12 +5,25 @@
     <div class="box mb-4">
       <h3>Order ID: <%= order.id %> | Date: <%= order.created_at.strftime("%B %d, %Y") %></h3>
       <ul>
+        <% total_price = 0 %>  <!-- Initialize total price for the order -->
         <% order.order_details.each do |detail| %>
+          <% total_price += detail.price_at_purchase * detail.quantity %>  <!-- Add up the total for all products in this order -->
           <li>
             <strong><%= detail.product.name %></strong> - Quantity: <%= detail.quantity %> - Price at Purchase: $<%= detail.price_at_purchase %>
           </li>
         <% end %>
       </ul>
+
+      <% gst = order.instance_variable_get(:@taxes)[:gst] %>
+      <% pst = order.instance_variable_get(:@taxes)[:pst] %>
+      <% hst = order.instance_variable_get(:@taxes)[:hst] %>
+      <p><strong>GST: $</strong><%= gst %></p>
+      <p><strong>PST: $</strong><%= pst %></p>
+      <p><strong>HST: $</strong><%= hst %></p>
+
+      <% final_total_price = total_price + gst + pst + hst %>
+
+      <p><strong>Total Order Price:</strong><%= number_to_currency(final_total_price) %></p>
     </div>
   <% end %>
 <% else %>
