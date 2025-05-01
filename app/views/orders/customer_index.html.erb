@@ -4,6 +4,10 @@
   <% @orders.each do |order| %>
     <div class="box mb-4">
       <h3>Order ID: <%= order.id %> | Date: <%= order.created_at.strftime("%B %d, %Y") %></h3>
+
+      <!-- Display Payment ID -->
+      <p><strong>Payment ID:</strong> <%= order.payment_id %></p>
+
       <ul>
         <% total_price = 0 %>  <!-- Initialize total price for the order -->
         <% order.order_details.each do |detail| %>

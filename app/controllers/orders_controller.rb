@@ -69,7 +69,7 @@ class OrdersController < ApplicationController
       payment_method_types: ["card"],
       line_items: line_items,
       mode: "payment",
-      success_url: checkout_success_url,
+      success_url: "#{checkout_success_url}?session_id={CHECKOUT_SESSION_ID}",
       cancel_url: checkout_cancel_url
     )
 
@@ -97,7 +97,17 @@ class OrdersController < ApplicationController
       return
     end
 
-    # Update stockquantity for each product in the order
+    # Retrieve the Stripe session from Stripe API
+    session_id = params[:session_id]  # Assuming you are passing session_id from the URL
+    stripe_session = Stripe::Checkout::Session.retrieve(session_id)
+
+    # Get the payment ID from the Stripe session
+    payment_id = stripe_session.payment_intent
+
+    # Update the order with the payment ID
+    order.update(payment_id: payment_id)
+
+    # Update stock quantity for each product in the order
     order.order_details.each do |detail|
       product = detail.product
       next unless product
@@ -110,6 +120,7 @@ class OrdersController < ApplicationController
     session[:cart] = []
     session[:last_order_id] = nil
   end
+
 
 
   def cancel
