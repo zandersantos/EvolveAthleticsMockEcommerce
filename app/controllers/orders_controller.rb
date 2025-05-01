@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: %i[ show edit update destroy ]
+  before_action :set_order, only: %i[ show edit destroy ]
   before_action :authenticate_customer!, only: [:invoice]
   # GET /orders or /orders.json
   def index
@@ -13,18 +13,19 @@ class OrdersController < ApplicationController
     @customer = current_customer
     @province = @customer.province
 
-    # Fetch cart items
     @cart_items = cart
 
-    # Calculate subtotal
     subtotal = @cart_items.sum { |item| item[:quantity] * item[:product].price }
 
-    # Calculate taxes based on the updated province
     @taxes = calculate_taxes(subtotal, @province)
 
-    # Calculate total price
     @total_price = subtotal + @taxes[:total_tax]
+
+    # Initialize an empty order object
+    @order = Order.new
   end
+
+
 
 
 
@@ -45,45 +46,38 @@ class OrdersController < ApplicationController
 
   # POST /orders or /orders.json
   def create
-    cart_items = cart
+    # Fetch the order based on the passed `order_id`
+    order = Order.find(params[:order_id])
 
-    line_items = cart_items.map do |item|
+    # Build line items for Stripe Checkout
+    line_items = order.order_details.map do |detail|
       {
         price_data: {
           currency: "cad",
           product_data: {
-            name: item[:product].name,
-            description: item[:product].description
+            name: detail.product.name,
+            description: detail.product.description
           },
-          unit_amount: (item[:product].price * 100).to_i
+          unit_amount: (detail.price_at_purchase * 100).to_i # Stripe expects amounts in cents
         },
-        quantity: item[:quantity]
+        quantity: detail.quantity
       }
     end
 
+    # Create a Stripe Checkout Session
     session = Stripe::Checkout::Session.create(
       payment_method_types: ["card"],
-      success_url: checkout_success_url,
-      cancel_url: checkout_cancel_url,
+      line_items: line_items,
       mode: "payment",
-      line_items: line_items
+      success_url: checkout_success_url,
+      cancel_url: checkout_cancel_url
     )
 
+    # Redirect the user to Stripe's checkout page
     redirect_to session.url, allow_other_host: true
   end
 
-  # PATCH/PUT /orders/1 or /orders/1.json
-  def update
-    respond_to do |format|
-      if @order.update(order_params)
-        format.html { redirect_to @order, notice: "Order was successfully updated." }
-        format.json { render :show, status: :ok, location: @order }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @order.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+
 
   # DELETE /orders/1 or /orders/1.json
   def destroy
@@ -116,42 +110,89 @@ class OrdersController < ApplicationController
   def cancel
   end
 
+  # In your OrdersController
   def submit_invoice
-    @customer = Customer.find_or_initialize_by(id: params[:customer][:id])
-    if @customer.update(customer_params)
-      @order = Order.new(customer: @customer)
+    # Ensure the customer exists
+    @customer = Customer.find(params[:customer_id])
 
-      if @order.save
-        cart.each do |item|
-          OrderDetail.create(
-            order: @order,
-            product: item[:product],
-            quantity: item[:quantity],
-            price: item[:product].price
-          )
-        end
+    # Ensure cart items are present in session and format it correctly
+    @cart_items = session[:cart] || []
 
-        session[:cart] = nil
-        redirect_to checkout_create_path(order_id: @order.id), notice: "Your invoice has been submitted successfully!"
-      else
-        flash[:alert] = "There was an error saving your order."
-        render :invoice
-      end
-    else
-      flash[:alert] = "There was an error saving customer details."
-      render :invoice
+    # If cart is empty, redirect back with an alert
+    if @cart_items.empty?
+      redirect_to root_path, alert: "Your cart is empty. Please add items before submitting the invoice."
+      return
     end
+
+    # Format the cart items into the expected format
+    formatted_cart_items = @cart_items.map do |item|
+      product = Product.find_by(id: item["id"])  # Use find_by to return nil if product is not found
+      if product.nil?
+        # Log the product id and indicate it's missing
+        Rails.logger.debug "Product with ID #{item['id']} not found in the database."
+        flash[:alert] = "Product with ID #{item['id']} not found."
+        redirect_to root_path and return
+      end
+      { product: product, quantity: item["quantity"] }
+    end
+
+    # Calculate the total from the formatted cart items
+    order_total = formatted_cart_items.sum { |item| item[:quantity] * item[:product].price }
+
+    # Create the Order
+    order = Order.create!(
+      total: order_total,
+      order_date: Date.today,
+      customer_id: @customer.id
+    )
+
+    # Create order details for each cart item
+    formatted_cart_items.each do |item|
+      # Log the product details to debug the issue
+      Rails.logger.debug "Creating OrderDetail with product: #{item[:product].inspect}, quantity: #{item[:quantity]}"
+
+      # Check if the product exists before creating OrderDetail
+      if item[:product].nil?
+        flash[:alert] = "Invalid product found in your cart."
+        redirect_to root_path and return
+      end
+
+      OrderDetail.create!(
+        quantity: item[:quantity],
+        price_at_purchase: item[:product].price,
+        order_id: order.id,
+        total: item[:quantity] * item[:product].price,
+        product_id: item[:product].id  # Explicitly pass the product_id
+      )
+    end
+
+    # Clear cart after order is placed
+    session[:cart] = []
+
+    # Redirect to a success page
+    redirect_to checkout_create_path(order_id: order.id)
+
   end
+
+
+
+
+
+
+
 
   private
 
   def order_params
-    params.require(:order).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
+    params.require(:order).permit(:total, :order_date, order_details_attributes: [:product_id, :quantity, :price_at_purchase, :total])
   end
 
+
+
   def customer_params
-    params.require(:order).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
+    params.require(:customer).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
   end
+
 
   #Hash
   TAX_RATES = {

@@ -3,58 +3,65 @@
 <p>Below are the items in your cart:</p>
 
 <!-- Cart Items Table -->
-<table class="table is-bordered is-striped">
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Individual Price</th>
-      <th>Subtotal</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @cart_items.each do |item| %>
+<% if session[:cart].present? %>
+  <table class="table is-bordered is-striped">
+    <thead>
       <tr>
-        <td><%= item[:product].name %></td>
-        <td><%= item[:quantity] %></td>
-        <td><%= number_to_currency(item[:product].price) %></td>
-        <td><%= number_to_currency(item[:quantity] * item[:product].price) %></td>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Individual Price</th>
+        <th>Subtotal</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% session[:cart].each do |item| %>
+        <% product = Product.find_by(id: item["id"]) %>
+        <% if product %>
+          <tr>
+            <td><%= product.name %></td>
+            <td><%= item["quantity"] %></td>
+            <td><%= number_to_currency(product.price) %></td>
+            <td><%= number_to_currency(product.price * item["quantity"]) %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
 
-<!-- Subtotal -->
-<% subtotal = @cart_items.sum { |item| item[:quantity] * item[:product].price } %>
-<h2>Subtotal: <%= number_to_currency(subtotal) %></h2>
+  <!-- Subtotal Calculation -->
+  <% subtotal = session[:cart].sum { |item| Product.find_by(id: item["id"]).price * item["quantity"] } %>
+  <h2>Subtotal: <%= number_to_currency(subtotal) %></h2>
 
-<!-- Taxes -->
-<h3>Taxes:</h3>
-<ul>
-  <li>GST: <%= number_to_currency(@taxes[:gst]) %></li>
-  <li>PST: <%= number_to_currency(@taxes[:pst]) %></li>
-  <li>HST: <%= number_to_currency(@taxes[:hst]) %></li>
-</ul>
+  <!-- Taxes -->
+  <h3>Taxes:</h3>
+  <ul>
+    <li>GST: <%= number_to_currency(@taxes[:gst]) %></li>
+    <li>PST: <%= number_to_currency(@taxes[:pst]) %></li>
+    <li>HST: <%= number_to_currency(@taxes[:hst]) %></li>
+  </ul>
 
-<!-- Total Price -->
-<h2>Total: <%= number_to_currency(@total_price) %></h2>
+  <!-- Total Price -->
+  <h2>Total: <%= number_to_currency(@total_price) %></h2>
+<% else %>
+  <p>Your cart is empty. Please add items to proceed.</p>
+<% end %>
 
 <hr />
+
 <!-- Province Picker Form -->
 <%= form_with url: update_province_path, method: :post, local: true do |f| %>
   <div class="field">
     <label class="label">Select Province for this Order!</label>
     <div class="control">
       <%= select_tag :province,
-    options_for_select(
-        ["Alberta", "British Columbia", "Manitoba", "New Brunswick",
-         "Newfoundland and Labrador", "Nova Scotia", "Ontario",
-         "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon",
-         "Northwest Territories", "Nunavut"],
-         @province
-    ),
-    class: "input", required: true %>
-
+        options_for_select(
+          ["Alberta", "British Columbia", "Manitoba", "New Brunswick",
+           "Newfoundland and Labrador", "Nova Scotia", "Ontario",
+           "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon",
+           "Northwest Territories", "Nunavut"],
+           @province
+        ),
+        class: "input", required: true %>
     </div>
   </div>
   <div class="control mt-2">
@@ -62,53 +69,19 @@
   </div>
 <% end %>
 
-<!-- Customer Details Form -->
-<%= form_with model: @customer, url: submit_invoice_path, method: :post do |f| %>
-  <div class="field">
-    <%= f.label :first_name, "First Name", class: "label" %>
-    <div class="control">
-      <%= f.text_field :first_name, class: "input", required: true %>
-    </div>
-  </div>
+<!-- Customer Details (Pre-Filled) -->
+<h3>Customer Details</h3>
+<p><strong>Name:</strong> <%= @customer.first_name %> <%= @customer.last_name %></p>
+<p><strong>Email:</strong> <%= @customer.email %></p>
+<p><strong>Phone Number:</strong> <%= @customer.phone_number %></p>
+<p><strong>Address:</strong> <%= @customer.address %></p>
+<p><strong>Province:</strong> <%= @customer.province %></p>
+
+<!-- Submit Invoice Form -->
+<%= form_with url: submit_invoice_path, method: :post, local: true do |f| %>
+  <%= hidden_field_tag :customer_id, @customer.id %> <!-- Ensure this is passed to the controller -->
 
   <div class="field">
-    <%= f.label :last_name, "Last Name", class: "label" %>
-    <div class="control">
-      <%= f.text_field :last_name, class: "input", required: true %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :phone_number, "Phone Number", class: "label" %>
-    <div class="control">
-      <%= f.telephone_field :phone_number, class: "input", required: true %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :email, "Email", class: "label" %>
-    <div class="control">
-      <%= f.email_field :email, class: "input", required: true %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :address, "Address", class: "label" %>
-    <div class="control">
-      <%= f.text_area :address, class: "textarea", rows: 3, required: true %>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= f.label :province, "Province", class: "label" %>
-    <div class="control">
-      <p class="input"><%= @customer.province %></p>
-    </div>
-  </div>
-
-  <div class="field">
-    <%= form_with url: checkout_create_path, method: :post do %>
-      <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
-    <% end %>
+    <%= submit_tag "Submit Invoice", class: "button is-primary" %>
   </div>
 <% end %>
