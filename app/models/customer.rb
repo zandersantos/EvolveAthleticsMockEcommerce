@@ -6,7 +6,7 @@ class Customer < ApplicationRecord
 
   validates :email, presence: true, uniqueness: { case_sensitive: false }
 
-
+  #belongs_to :province
 
   has_many :orders
 end

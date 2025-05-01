@@ -1,8 +1,72 @@
-<h1 class="title is-2">All Products</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>All Products</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-<ol class="ml-5">
-  <% @products.each do |product|%>
-    <li><%= link_to product.name, product%>:  Category: <%=link_to product.category.name, product.category%></li>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
 
-  <%end%>
+  <body>
+    <section class="section">
+      <div class="container">
+        <% flash.each do |type, msg| %>
+          <% bulma_class = case type.to_sym
+                   when :notice then "is-success"
+                   when :alert then "is-danger"
+                   else "is-info"
+                   end %>
+            <div class="notification <%= bulma_class %>">
+              <%= msg %>
+            </div>
+          <% end %>
+
+        <h1 class="title is-2">All Products</h1>
+
+        <ol class="ml-5">
+  <% @products.each do |product| %>
+    <li class="mb-5 box">
+      <div class="columns is-vcentered">
+        <div class="column is-one-third">
+          <% if product.image.attached? %>
+            <%= image_tag product.image, class: "image is-128x128" %>
+          <% else %>
+            <p class="has-text-grey-light">No image available</p>
+          <% end %>
+        </div>
+
+        <div class="column">
+          <p class="title is-5 mb-1">
+            <%= link_to product.name, product %>
+          </p>
+          <p class="subtitle is-6">
+            <em>(<%= link_to product.category.name, product.category %>)</em>
+          </p>
+          <p class="content mb-2 has-text-grey-dark">
+            <%= product.description %>
+          </p>
+          <p class="has-text-weight-semibold mt-2">
+            In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
+          </p>
+        </div>
+      </div>
+    </li>
+  <% end %>
 </ol>
+
+
+
+        <div class="mt-4">
+            <%= paginate @products %>
+          </div>
+
+        <%= render partial: "common/footer" %>
+      </div>
+    </section>
+  </body>
+</html>
