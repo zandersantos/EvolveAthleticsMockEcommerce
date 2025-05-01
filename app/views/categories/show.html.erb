@@ -2,10 +2,3 @@
 
 <%= render @category %>
 
-
-<h2>Products in this Category</h2>
-<ul>
-  <% @category.products.each do |product| %>
-    <li> - <%= link_to product.name, product %></li>
-  <% end %>
-</ul>

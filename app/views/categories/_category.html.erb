@@ -1,20 +1,68 @@
+<% content_for :html_title do %>
+  <%= @category.name %>
+<% end %>
 
-<div id="<%= dom_id category %>">
-  <% if category.image.present? %>
-    <div class="card-image">
-      <figure class="image is-4by3">
-        <%= image_tag category.image%>
-      </figure>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
+
+  <body>
+    <div class="mb-4">
+      <%= link_to "Back to Categories", categories_path, class: "button is-link" %>
     </div>
-  <%end%>
-  <p>
-    <strong>Name:</strong>
-    <%= category.name %>
-  </p>
+    <section class="section">
+      <div class="container">
+        <p style="color: green"><%= notice %></p>
+        <!-- Category Card -->
+        <div class="card">
+          <% if @category.image.attached? %>
+            <div class="card-image">
+              <div class="columns is-centered">
+                <div class="column is-one-third">
+                  <figure class="image is-square">
+                    <%= image_tag @category.image %>
+                  </figure>
+                </div>
+              </div>
+            </div>
+          <% end %>
 
-  <p>
-    <strong>Description:</strong>
-    <%= category.description %>
-  </p>
+          <div class="card-content">
+            <div class="content">
+              <p>
+                <h2 class="title is-4">Name:</h2>
+                <%= @category.name %>
+              </p>
 
-</div>
+              <p>
+                <h2 class="title is-4 mt-4">Description:</h2>
+                <%= @category.description %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Associated Products -->
+        <div class="mt-6">
+          <h2 class="title is-4">Products in this Category</h2>
+          <div class="tags mt-4">
+            <% @category.products.each do |product| %>
+              <%= link_to product.name, product_path(product), class: "tag is-link is-light" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

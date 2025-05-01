@@ -2,54 +2,93 @@
   <%= @product.name %>
 <% end %>
 
-<div class="card">
-  <% if @product.image.present? %>
-    <div class="card-image">
-      <figure class="image is-4by3">
-        <%= image_tag @product.image %>
-      </figure>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+
+  </head>
+
+  <body>
+    <div class="mb-4">
+      <%= link_to "Back to Products", products_path, class: "button is-link" %>
     </div>
-  <% end %>
-</div>
+    <section class="section mt-0">
+      <div class="container">
+        <!-- Product Card -->
+        <div class="card product-card">
+          <% if @product.image.attached? %>
+            <div class="card-image">
+              <div class="columns is-centered">
+                <div class="column is-half"> <!-- Limits image size to 25% of container -->
+                  <figure class="image is-square">
+                    <%= image_tag @product.image %>
+                  </figure>
+                </div>
+              </div>
+            </div>
+          <% end %>
 
-  <div class="card-content">
-    <div class="content">
-      <p>
-        <h2 class="title is-4 mt-6">Name:</h2><%= product.name %>
-      </p>
+          <div class="card-content">
+            <div class="content">
+              <!-- Product Information -->
+              <p>
+                <h2 class="title is-4 mt-6">Name:</h2>
+                <%= @product.name %>
+              </p>
 
-      <p>
-        <h2 class="title is-4 mt-6">Description:</h2><%= product.description %>
-      </p>
+              <p>
+                <h2 class="title is-4 mt-6">Description:</h2>
+                <%= @product.description %>
+              </p>
 
-      <p>
-        <h2 class="title is-4 mt-6">Price:</h2>$<%= product.price %>
-      </p>
+              <p>
+                <h2 class="title is-4 mt-6">Price:</h2>
+                $<%= @product.price %>
+              </p>
 
-      <p>
-        <h2 class="title is-4 mt-6">Stock Quantity:</h2><%= product.stockquantity %>
-      </p>
+              <p>
+                <h2 class="title is-4 mt-6">Stock Quantity:</h2>
+                <%= @product.stockquantity %>
+              </p>
 
-      <p>
-        <h2 class="title is-4 mt-6">Category:</h2><%= link_to product.category.name, category_path(product.category) %>
-      </p>
+              <p>
+                <h2 class="title is-4 mt-6">Category:</h2>
+                <%= link_to @product.category.name, category_path(@product.category), class: "has-text-link" %>
+              </p>
 
-      <% if cart.include?(product) %>
-        <%= button_to cart_path(product), method: :delete, class: "button is-small is-danger" do %>
-          Remove from Cart
-        <% end %>
-      <% else %>
-        <%= form_with url: cart_index_path, method: :post do %>
-          <%= hidden_field_tag :id, product.id %>
-          <div class="field">
-            <label class="label">Quantity</label>
-            <div class="control">
-              <%= number_field_tag :quantity, 1, min: 1, max: product.stockquantity, class: "input" %>
+              <!-- Add or Remove from Cart -->
+              <div class="mt-4">
+                <% if cart.include?(@product) %>
+                  <%= button_to cart_path(@product), method: :delete, class: "button is-small is-danger" do %>
+                    Remove from Cart
+                  <% end %>
+                <% else %>
+                  <%= form_with url: cart_index_path, method: :post do %>
+                    <%= hidden_field_tag :id, @product.id %>
+                    <div class="field">
+                      <label class="label">Quantity</label>
+                      <div class="control">
+                        <%= number_field_tag :quantity, 1, min: 1, max: @product.stockquantity, class: "input" %>
+                      </div>
+                    </div>
+                    <%= button_tag "Add to Cart", class: "button is-primary" %>
+                  <% end %>
+                <% end %>
+              </div>
             </div>
           </div>
-          <%= button_tag "Add to Cart", class: "button is-primary" %>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-</div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
