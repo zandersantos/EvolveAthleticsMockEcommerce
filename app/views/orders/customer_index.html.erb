@@ -1,37 +1,69 @@
-<h2>Past Orders for <%= @customer.first_name %> <%= @customer.last_name %></h2>
-
-<% if @orders.any? %>
-  <% @orders.each do |order| %>
-    <div class="box mb-4">
-      <h3>Order ID: <%= order.id %> | Date: <%= order.created_at.strftime("%B %d, %Y") %></h3>
-
-      <!-- Display Payment ID -->
-      <p><strong>Payment ID:</strong> <%= order.payment_id %></p>
-
-      <ul>
-        <% total_price = 0 %>  <!-- Initialize total price for the order -->
-        <% order.order_details.each do |detail| %>
-          <% total_price += detail.price_at_purchase * detail.quantity %>  <!-- Add up the total for all products in this order -->
-          <li>
-            <strong><%= detail.product.name %></strong> - Quantity: <%= detail.quantity %> - Price at Purchase: $<%= detail.price_at_purchase %>
-          </li>
-        <% end %>
-      </ul>
-
-      <% gst = order.instance_variable_get(:@taxes)[:gst] %>
-      <% pst = order.instance_variable_get(:@taxes)[:pst] %>
-      <% hst = order.instance_variable_get(:@taxes)[:hst] %>
-      <p><strong>GST: $</strong><%= gst %></p>
-      <p><strong>PST: $</strong><%= pst %></p>
-      <p><strong>HST: $</strong><%= hst %></p>
-
-      <% final_total_price = total_price + gst + pst + hst %>
-
-      <p><strong>Total Order Price:</strong><%= number_to_currency(final_total_price) %></p>
-    </div>
-  <% end %>
-<% else %>
-  <p>No past orders found.</p>
+<% content_for :html_title do %>
+  Past Orders for <%= @customer.first_name %> <%= @customer.last_name %>
 <% end %>
 
-<%= link_to "Back to My Account", edit_customer_registration_path, class: "button" %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  </head>
+
+  <body>
+    <div class="mb-4 p-4">
+      <%= link_to "Back", edit_customer_registration_path, class: "button is-link" %>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="title is-2">
+          Past Orders for <%= @customer.first_name %> <%= @customer.last_name %>
+        </h2>
+
+        <% if @orders.any? %>
+          <% @orders.each do |order| %>
+            <div class="box mb-4">
+              <h3>Order ID: <%= order.id %> | Date: <%= order.created_at.strftime("%B %d, %Y") %></h3>
+
+              <p><strong>Payment ID:</strong> <%= order.payment_id %></p>
+
+              <ul>
+                <% total_price = 0 %>
+                <% order.order_details.each do |detail| %>
+                  <% total_price += detail.price_at_purchase * detail.quantity %>
+                  <li>
+                    <strong><%= detail.product.name %></strong> -
+                    Quantity: <%= detail.quantity %> -
+                    Price at Purchase: $<%= detail.price_at_purchase %>
+                  </li>
+                <% end %>
+              </ul>
+
+              <% gst = order.instance_variable_get(:@taxes)[:gst] %>
+              <% pst = order.instance_variable_get(:@taxes)[:pst] %>
+              <% hst = order.instance_variable_get(:@taxes)[:hst] %>
+
+              <p><strong>GST:</strong> $<%= gst %></p>
+              <p><strong>PST:</strong> $<%= pst %></p>
+              <p><strong>HST:</strong> $<%= hst %></p>
+
+              <% final_total_price = total_price + gst + pst + hst %>
+              <p><strong>Total Order Price:</strong> <%= number_to_currency(final_total_price) %></p>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="notification is-warning">
+            No past orders found.
+          </div>
+        <% end %>
+      </div>
+    </section>
+  </body>
+</html>
