@@ -2,9 +2,14 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
   before_action :initialize_cart
+  before_action :load_categories
 
   helper_method :cart
   before_action :configure_permitted_parameters, if: :devise_controller?
+  def all_categories
+    @all_categories = Category.all
+  end
+
 
   protected
   def configure_permitted_parameters
@@ -26,5 +31,10 @@ class ApplicationController < ActionController::Base
   def search
     @query = params[:query]
     @results = Page.where("title LIKE ? OR content LIKE ?", "%#{@query}%", "%#{@query}%")
+
+  end
+  def load_categories
+    @categories = Category.all
+    @all_categories = all_categories()
   end
 end

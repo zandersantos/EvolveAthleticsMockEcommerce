@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get "/orders/create", to: "orders#create", as: "checkout_create"
   get "/orders/success", to: "orders#success", as: "checkout_success"
   get "/orders/cancel", to: "orders#cancel", as: "checkout_cancel"
+  get 'search_by_category', to: 'search#search_by_category'
   get 'search_all', to: 'search#search_all', as: 'search_all'
   resources :pages, except: [ :show ]
   get "/pages/:permalink", to: "pages#permalink", as: "page_permalink"
