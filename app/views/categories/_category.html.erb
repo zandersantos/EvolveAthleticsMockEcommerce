@@ -12,19 +12,19 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-
-    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   </head>
 
   <body>
+    <!-- BreadCrumb back to All Categories -->
     <div class="mb-4">
       <%= link_to "Back to Categories", categories_path, class: "button is-link" %>
     </div>
     <section class="section">
       <div class="container">
         <p style="color: green"><%= notice %></p>
-        <!-- Category Card -->
+
+        <!-- This is the Category "Card" View Section -->
         <div class="card">
           <% if @category.image.attached? %>
             <div class="card-image">
@@ -38,6 +38,7 @@
             </div>
           <% end %>
 
+          <!-- Display Category information -->
           <div class="card-content">
             <div class="content">
               <p>
@@ -53,7 +54,7 @@
           </div>
         </div>
 
-        <!-- Associated Products -->
+        <!-- Display Products with the Associated Categories -->
         <div class="mt-6">
           <h2 class="title is-4">Products in this Category</h2>
           <div class="tags mt-4">
