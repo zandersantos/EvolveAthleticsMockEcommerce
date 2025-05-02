@@ -111,11 +111,6 @@
                   <div class="navbar-item">
                     <%= link_to "Invoice", order_invoice_path, class: "button is-primary" %>
                   </div>
-                  <div class="navbar-item">
-                    <%= form_with url: checkout_create_path, method: :post do %>
-                      <%= button_tag "Checkout", class: "button is-primary", data: { turbo: false } %>
-                    <% end %>
-                  </div>
                 </div>
               <% end %>
             </div>
