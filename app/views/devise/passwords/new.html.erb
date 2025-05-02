@@ -12,13 +12,12 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   </head>
 
   <body>
     <div class="mb-4">
-      <%= link_to "Back", root_path, class: "button is-link" %>
+      <%= link_to "Back to Login", new_customer_session_path, class: "button is-link" %>
     </div>
 
     <section class="section">

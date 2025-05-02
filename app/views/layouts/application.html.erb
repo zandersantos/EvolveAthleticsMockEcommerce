@@ -76,6 +76,7 @@
                 <p class="control">
                   <%= button_to "Admin", new_admin_user_session_path, method: :get, class: "button is-small is-link" %>
                 </p>
+                <!-- Checks to see if the Customer is logged in, and displays links based on it-->
                 <% if customer_signed_in? %>
                   <p class="control">
                     <%= link_to "My Account", edit_customer_registration_path, class: "button is-small is-success" %>
