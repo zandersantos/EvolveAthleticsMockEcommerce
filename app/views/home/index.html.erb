@@ -30,6 +30,9 @@
                   <p class="subtitle is-6">
                     <em>(<%= link_to product.category.name, product.category %>)</em>
                   </p>
+                  <p class="mt-2">
+                    Price: $<span class="has-text-weight-semibold"><%= product.price %></span>
+                  </p>
                   <p class="has-text-weight-semibold mt-2">
                     In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
                   </p>
