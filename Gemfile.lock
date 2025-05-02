@@ -245,6 +245,7 @@ GEM
       racc
     pexels (0.5.0)
       requests (~> 1.0.2)
+    pg (1.5.9)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -386,12 +387,6 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
-    sqlite3 (2.6.0-aarch64-linux-gnu)
-    sqlite3 (2.6.0-aarch64-linux-musl)
-    sqlite3 (2.6.0-arm-linux-gnu)
-    sqlite3 (2.6.0-arm-linux-musl)
-    sqlite3 (2.6.0-x86_64-linux-gnu)
-    sqlite3 (2.6.0-x86_64-linux-musl)
     sshkit (1.24.0)
       base64
       logger
@@ -459,6 +454,7 @@ DEPENDENCIES
   kamal
   kaminari
   pexels
+  pg
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.2)
@@ -469,7 +465,6 @@ DEPENDENCIES
   solid_cable
   solid_cache
   solid_queue
-  sqlite3 (>= 2.1)
   stimulus-rails
   stripe
   thruster
