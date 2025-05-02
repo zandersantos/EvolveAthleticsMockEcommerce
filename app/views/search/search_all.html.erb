@@ -12,13 +12,13 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   </head>
 
   <body>
+    <!-- BreadCrumb to go back to the Homepage-->
     <div class="mb-4 p-4">
-      <%= link_to "Back to Products", products_path, class: "button is-link" %>
+      <%= link_to "Back to Homepage", root_path, class: "button is-link" %>
     </div>
 
     <section class="section">
@@ -35,7 +35,7 @@
               All Products
             <% end %>
           </h2>
-
+          <!-- Display all Products -->
           <% if @products.any? %>
             <div class="box">
               <h3 class="title is-4">Products</h3>
@@ -54,6 +54,7 @@
             </div>
           <% end %>
 
+          <!-- Display all Categories -->
           <% if @categories.any? %>
             <div class="box">
               <h3 class="title is-4">Categories</h3>
@@ -65,6 +66,7 @@
                 <% end %>
               </ul>
             </div>
+          <!-- Warning if no results were found-->
           <% else %>
             <div class="notification is-warning">
               No results found.
