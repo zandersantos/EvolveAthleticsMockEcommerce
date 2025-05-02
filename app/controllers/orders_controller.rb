@@ -1,5 +1,7 @@
 class OrdersController < ApplicationController
+  #Set the order before the show, edit, and destroy
   before_action :set_order, only: %i[ show edit destroy ]
+  #Authenticate the Customer is logged in before going to the Invoice
   before_action :authenticate_customer!, only: [:invoice]
   # GET /orders or /orders.json
   def index
@@ -9,27 +11,6 @@ class OrdersController < ApplicationController
   # GET /orders/1 or /orders/1.json
   def show
   end
-  def invoice
-    @customer = current_customer
-    @province = @customer.province
-
-    @cart_items = cart
-
-    subtotal = @cart_items.sum { |item| item[:quantity] * item[:product].price }
-
-    @taxes = calculate_taxes(subtotal, @province)
-
-    @total_price = subtotal + @taxes[:total_tax]
-
-    # Initialize an empty order object
-    @order = Order.new
-  end
-
-
-
-
-
-
 
   # GET /orders/new
   def new
@@ -46,10 +27,9 @@ class OrdersController < ApplicationController
 
   # POST /orders or /orders.json
   def create
-    # Fetch the order based on the passed `order_id`
     order = Order.find(params[:order_id])
 
-    # Build line items for Stripe Checkout
+    #Stripe Checkout
     line_items = order.order_details.map do |detail|
       {
         price_data: {
@@ -58,7 +38,8 @@ class OrdersController < ApplicationController
             name: detail.product.name,
             description: detail.product.description
           },
-          unit_amount: (detail.price_at_purchase * 100).to_i # Stripe expects amounts in cents
+          #Stripe expects amounts in cents
+          unit_amount: (detail.price_at_purchase * 100).to_i
         },
         quantity: detail.quantity
       }
@@ -78,7 +59,6 @@ class OrdersController < ApplicationController
   end
 
 
-
   # DELETE /orders/1 or /orders/1.json
   def destroy
     @order.destroy!
@@ -88,133 +68,153 @@ class OrdersController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+
+  #Order Success Logic Section
   def success
-    # Retrieve the completed order from session
+    #Get the Full Order from the Session
     order = Order.find_by(id: session[:last_order_id])
 
+    #Error Handling: If there is no Order Found, go back to the homepage and alert the User
     if order.nil?
       redirect_to root_path, alert: "Order not found."
       return
     end
 
-    # Retrieve the Stripe session from Stripe API
-    session_id = params[:session_id]  # Assuming you are passing session_id from the URL
+    #Retrieve the Stripe session
+    session_id = params[:session_id]
     stripe_session = Stripe::Checkout::Session.retrieve(session_id)
 
-    # Get the payment ID from the Stripe session
+    #Get the payment ID from the Stripe session
+    #payment_intent = Unique Stripe Session String ID
     payment_id = stripe_session.payment_intent
 
-    # Update the order with the payment ID
+    #Add the payment Id to the Order
     order.update(payment_id: payment_id)
 
-    # Update stock quantity for each product in the order
+    #Update stockquantity
     order.order_details.each do |detail|
       product = detail.product
-      next unless product
-
-      new_quantity = product.stockquantity - detail.quantity
-      product.update(stockquantity: new_quantity)
+      if product
+        new_quantity = product.stockquantity - detail.quantity
+        product.update(stockquantity: new_quantity)
+      end
     end
 
-    # Clear cart and session reference to the order
+    #Restart the Session by clearing the cart and session references
     session[:cart] = []
     session[:last_order_id] = nil
   end
 
-
-
+  #Order Cancel Logic Section
   def cancel
   end
-  def customer_index
-    @customer = Customer.find(params[:id])
-    @orders = @customer.orders.includes(:order_details => :product).order(created_at: :desc)
 
-    @orders.each do |order|
-      total_price = 0
-      order.order_details.each do |detail|
-        total_price += detail.price_at_purchase * detail.quantity
-      end
+  #Order Invoice Logic Section
+  def invoice
+    #Customer is the current logged in customer (devise)
+    @customer = current_customer
+    #Get the current customers province to use for Taxes
+    @province = @customer.province
 
-      # Calculate taxes for each order
-      taxes = calculate_taxes(total_price, @customer.province)
+    #Get all Cart Items
+    @cart_items = cart
 
-      order.instance_variable_set(:@taxes, taxes)
+    #Get the Subtotal of the Cart
+    subtotal = @cart_items.sum do |item|
+      item_quantity = item[:quantity]
+      item_price = item[:product].price
+      item_quantity * item_price
     end
+
+    #Use calculate_taxes to get province based taxes
+    @taxes = calculate_taxes(subtotal, @province)
+
+    #Calculate the total tax
+    @total_price = subtotal + @taxes[:total_tax]
+
+    #Create a new Order
+    @order = Order.new
   end
 
-
-
-  # In your OrdersController
+  #Order Invoice Submittion Logic Section
   def submit_invoice
-    # Ensure the customer exists
+    #Get the Current Customer
     @customer = Customer.find(params[:customer_id])
 
-    # Ensure cart items are present in session and format it correctly
+    #Get whatever is in the cart
     @cart_items = session[:cart] || []
 
-    # If cart is empty, redirect back with an alert
+    #If cart = empty, redirect back to the homepage and display and alert to the user
     if @cart_items.empty?
       redirect_to root_path, alert: "Your cart is empty. Please add items before submitting the invoice."
       return
     end
 
-    # Format the cart items into the expected format
-    formatted_cart_items = @cart_items.map do |item|
-      product = Product.find_by(id: item["id"])  # Use find_by to return nil if product is not found
-      if product.nil?
-        # Log the product id and indicate it's missing
-        Rails.logger.debug "Product with ID #{item['id']} not found in the database."
-        flash[:alert] = "Product with ID #{item['id']} not found."
-        redirect_to root_path and return
-      end
+    #Associate the Cart Items with their correct Product
+    associated_cart_items = @cart_items.map do |item|
+      #Find the Product associated with the Cart Item
+      product = Product.find_by(id: item["id"])
+      #Create a basic hash to associate the product with quantity
+      # Identical to below { :product => product, :quantity => item["quantity"] }
       { product: product, quantity: item["quantity"] }
     end
 
-    # Calculate the total from the formatted cart items
-    order_total = formatted_cart_items.sum { |item| item[:quantity] * item[:product].price }
+    #Calculate the cart total
+    order_total = associated_cart_items.sum do |item|
+      quantity = item[:quantity]
+      price = item[:product].price
+      quantity * price
+    end
 
-    # Create the Order
+    #Create a new Order record
     order = Order.create!(
       total: order_total,
       order_date: Date.today,
       customer_id: @customer.id
     )
 
-    # Create order details for each cart item
-    formatted_cart_items.each do |item|
-      # Log the product details to debug the issue
-      Rails.logger.debug "Creating OrderDetail with product: #{item[:product].inspect}, quantity: #{item[:quantity]}"
-
-      # Check if the product exists before creating OrderDetail
-      if item[:product].nil?
-        flash[:alert] = "Invalid product found in your cart."
-        redirect_to root_path and return
-      end
-
+    #Create a new OrderDetail record through the order and cart
+    associated_cart_items.each do |item|
       OrderDetail.create!(
         quantity: item[:quantity],
         price_at_purchase: item[:product].price,
         order_id: order.id,
         total: item[:quantity] * item[:product].price,
-        product_id: item[:product].id  # Explicitly pass the product_id
+        product_id: item[:product].id
       )
       session[:last_order_id] = order.id
     end
 
-    # Clear cart after order is placed
+    #Clear the Cart after completed payment
     session[:cart] = []
 
-    # Redirect to a success page
+    #Redirect the user to the Success View
     redirect_to checkout_create_path(order_id: order.id)
 
   end
 
+  #Order Customer Past Orders Logic Section
+  def customer_index
+    #Get the Customer
+    @customer = Customer.find(params[:id])
+    #Get the Orders associated with the Customer
+    @orders = @customer.orders.includes(:order_details => :product).order(created_at: :desc)
 
+    #Go through each order and re-calculate the price, taxes and total
+    @orders.each do |order|
+      total_price = 0
+      order.order_details.each do |detail|
+        total_price += detail.price_at_purchase * detail.quantity
+      end
 
+      #Calculate taxes for each order
+      taxes = calculate_taxes(total_price, @customer.province)
 
-
-
-
+      #Store the calculated taxes as instance variables so it can be retrieved in the invoice view
+      order.instance_variable_set(:@taxes, taxes)
+    end
+  end
 
   private
 
@@ -222,14 +222,12 @@ class OrdersController < ApplicationController
     params.require(:order).permit(:total, :order_date, order_details_attributes: [:product_id, :quantity, :price_at_purchase, :total])
   end
 
-
-
   def customer_params
     params.require(:customer).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
   end
 
 
-  #Hash
+  #Province Tax Rate Hash
   TAX_RATES = {
     "Alberta" => { gst: 0.05, pst: 0, hst: 0 },
     "British Columbia" => { gst: 0.05, pst: 0.07, hst: 0 },
@@ -246,16 +244,21 @@ class OrdersController < ApplicationController
     "Nunavut" => { gst: 0.05, pst: 0, hst: 0 }
   }
 
+  #Calculate the taxes based on the retrieved SubTotal and Customer Province
   def calculate_taxes(subtotal, province)
-    tax_rate = TAX_RATES[province] || {}
-    gst = subtotal * (tax_rate[:gst] || 0)
-    pst = subtotal * (tax_rate[:pst] || 0)
-    hst = subtotal * (tax_rate[:hst] || 0)
+    #Get the Province's taxes based on the above Hash
+    tax_rate = TAX_RATES[province]
+    #Calculate the taxes by getting the subtotal and Hash Tax Rate
+    gst = subtotal * (tax_rate[:gst])
+    pst = subtotal * (tax_rate[:pst])
+    hst = subtotal * (tax_rate[:hst])
 
     {
+      #Individual Taxes
       gst: gst,
       pst: pst,
       hst: hst,
+      #Total Tax
       total_tax: gst + pst + hst
     }
   end

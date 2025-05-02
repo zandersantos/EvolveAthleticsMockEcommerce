@@ -2,30 +2,28 @@ class SearchController < ApplicationController
   def search_all
     @query = params[:query]
 
-    # Try to match the query to a category name exactly (case insensitive)
+    #If the user searches and it matches a category name. Instead display the category search view.
+    #Display all products that is associated with that query
     matching_category = Category.where('LOWER(name) = ?', @query.downcase).first
 
     if matching_category
       @products = Product.where(category_id: matching_category.id)
       @categories = Category.where(id: matching_category.id)
-      @category_id = matching_category.id  # For use in the view title
+      @category_id = matching_category.id
     else
-      # Regular search for products and categories with LIKE
+      #Search for Products and/or Categories
       @products = Product.where("name LIKE ?", "%#{@query}%")
       @categories = Category.where("name LIKE ?", "%#{@query}%")
     end
   end
 
-
+  #Category Dropdown search section
   def search_by_category
     @category_id = params[:category_id]
 
-    # Filter products based on selected category
     @products = Product.where(category_id: @category_id)
 
-    # Ensure ONLY the selected category shows
     @categories = Category.where(id: @category_id)
-
 
     render :search_all
   end

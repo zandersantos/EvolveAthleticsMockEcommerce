@@ -1,6 +1,7 @@
 class CustomersController < ApplicationController
-  # Callback to set the current customer for relevant actions
+  #Set the customer before the edit, update and update_province actions
   before_action :set_customer, only: %i[edit update update_province]
+  #Set the customer before the edit and update actions
   before_action :set_provinces, only: %i[edit update]
 
   def edit
@@ -16,25 +17,23 @@ class CustomersController < ApplicationController
     end
   end
 
-  # Action to update province directly
+  #Customer Province Update Logic Section
   def update_province
+    #Update the Customers Province and redirect back to the invoice page (Reloads the Page Basically)
     if @customer.update(province: params[:province])
       redirect_to order_invoice_path, notice: "Province updated successfully."
-    else
-      flash[:alert] = "There was an error updating the province."
-      redirect_to order_invoice_path, status: :unprocessable_entity
     end
   end
 
   private
 
   def set_customer
-    # Ensure we load the current customer
-    @customer = current_customer # Assumes Devise or similar authentication
+    #Get the Current Customer (devise)
+    @customer = current_customer
   end
 
   def set_provinces
-    # Populate list of provinces for forms
+    #Populate the Provinces correctly
     @provinces = ["Alberta", "British Columbia", "Manitoba", "New Brunswick",
                   "Newfoundland and Labrador", "Nova Scotia", "Ontario",
                   "Prince Edward Island", "Quebec", "Saskatchewan",
@@ -42,7 +41,6 @@ class CustomersController < ApplicationController
   end
 
   def customer_params
-    # Strong parameters to allow permitted attributes
     params.require(:customer).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
   end
 end

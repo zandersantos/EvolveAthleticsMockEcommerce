@@ -1,4 +1,5 @@
 class CategoriesController < ApplicationController
+  #Set the category before the show, edit, update and destroy actions
   before_action :set_category, only: %i[ show edit update destroy ]
 
   # GET /categories or /categories.json
