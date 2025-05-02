@@ -69,6 +69,6 @@ class PagesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def page_params
-    params.require(:page).permit(:title, :content, :permalink)
+    params.expect(page: %i[title content permalink])
   end
 end

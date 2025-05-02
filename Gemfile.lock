@@ -459,6 +459,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 8.0.2)
   rubocop
+  rubocop-rails
   rubocop-rails-omakase
   sass-rails
   selenium-webdriver

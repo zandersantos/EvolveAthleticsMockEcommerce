@@ -1,7 +1,7 @@
 class CustomersController < ApplicationController
-  #Set the customer before the edit, update and update_province actions
+  # Set the customer before the edit, update and update_province actions
   before_action :set_customer, only: %i[edit update update_province]
-  #Set the customer before the edit and update actions
+  # Set the customer before the edit and update actions
   before_action :set_provinces, only: %i[edit update]
 
   def edit
@@ -17,23 +17,23 @@ class CustomersController < ApplicationController
     end
   end
 
-  #Customer Province Update Logic Section
+  # Customer Province Update Logic Section
   def update_province
-    #Update the Customers Province and redirect back to the invoice page (Reloads the Page Basically)
-    if @customer.update(province: params[:province])
-      redirect_to order_invoice_path, notice: "Province updated successfully."
-    end
+    # Update the Customers Province and redirect back to the invoice page (Reloads the Page Basically)
+    return unless @customer.update(province: params[:province])
+
+    redirect_to order_invoice_path, notice: "Province updated successfully."
   end
 
   private
 
   def set_customer
-    #Get the Current Customer (devise)
+    # Get the Current Customer (devise)
     @customer = current_customer
   end
 
   def set_provinces
-    #Populate the Provinces correctly
+    # Populate the Provinces correctly
     @provinces = ["Alberta", "British Columbia", "Manitoba", "New Brunswick",
                   "Newfoundland and Labrador", "Nova Scotia", "Ontario",
                   "Prince Edward Island", "Quebec", "Saskatchewan",
@@ -41,6 +41,7 @@ class CustomersController < ApplicationController
   end
 
   def customer_params
-    params.require(:customer).permit(:first_name, :last_name, :phone_number, :email, :address, :province)
+    params.expect(customer: %i[first_name last_name phone_number email address
+                               province])
   end
 end

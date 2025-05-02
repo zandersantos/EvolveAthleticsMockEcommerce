@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
-  #Set the category before the show, edit, update and destroy actions
-  before_action :set_category, only: %i[ show edit update destroy ]
+  # Set the category before the show, edit, update and destroy actions
+  before_action :set_category, only: %i[show edit update destroy]
 
   # GET /categories or /categories.json
   def index
@@ -19,8 +19,7 @@ class CategoriesController < ApplicationController
   end
 
   # GET /categories/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /categories or /categories.json
   def create
@@ -55,19 +54,23 @@ class CategoriesController < ApplicationController
     @category.destroy!
 
     respond_to do |format|
-      format.html { redirect_to categories_path, status: :see_other, notice: "Category was successfully destroyed." }
+      format.html do
+        redirect_to categories_path, status: :see_other,
+                                     notice: "Category was successfully destroyed."
+      end
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_category
-      @category = Category.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def category_params
-      params.expect(category: [ :name, :description ])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_category
+    @category = Category.find(params.expect(:id))
+  end
+
+  # Only allow a list of trusted parameters through.
+  def category_params
+    params.expect(category: %i[name description])
+  end
 end
