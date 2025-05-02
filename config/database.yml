@@ -25,8 +25,10 @@ cable:
 queue:
   adapter: postgresql
   encoding: unicode
-  pool: 5
-  url: <%= ENV["DATABASE_URL"] %>
+  database: evolveathletics_queue
+  username: alexander
+  password: mob1
+  host: localhost
 
 cache:
   adapter: postgresql
