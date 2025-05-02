@@ -1,10 +1,11 @@
 class ProductsController < ApplicationController
   # Set the product before the show, edit, update and destroy actions
   before_action :set_product, only: %i[show edit update destroy]
+  before_action :track_visit, only: [:show]
 
   # GET /products or /products.json
   def index
-    @products = Product.includes(:category).order(name: :asc).page(params[:page]).per(20)
+    @products = Product.includes(:category).order(name: :asc, created_at: :asc).page(params[:page]).per(20)
   end
 
   # GET /products/1 or /products/1.json
@@ -58,6 +59,14 @@ class ProductsController < ApplicationController
       end
       format.json { head :no_content }
     end
+  end
+
+  # Tracking Product Sessions Logic Section
+  def track_visit
+    session[:visit] ||= 0
+    session[:visit] += 1
+
+    flash[:notice] = "You've visited #{session[:visit]} products!"
   end
 
   private
