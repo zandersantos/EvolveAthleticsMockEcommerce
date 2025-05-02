@@ -1,72 +1,86 @@
-<!-- Header Section -->
-<section class="section">
-  <div class="container has-text-centered">
-    <h1 class="title is-1">Evolve Athletics</h1>
-    <p class="subtitle is-italic has-text-grey">Placeholder text</p>
-  </div>
-</section>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Evolve Athletics</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+</head>
 
-<section class="section">
-  <div class="container">
-    <div class="columns">
-      <div class="column">
-        <h4 class="title is-4">Products</h4>
-        <div class="ml-5">
-          <% @products.each do |product| %>
-            <div class="box mb-4">
-              <div class="columns is-vcentered">
-                <div class="column is-one-third">
-                  <% if product.image.attached? %>
-                    <%= image_tag product.image %>
-                  <% else %>
-                    <p class="has-text-grey-light">No image available</p>
-                  <% end %>
-                </div>
+<body>
+  <!-- Header Section -->
+  <section class="section">
+    <div class="container has-text-centered">
+      <h1 class="title is-1">Evolve Athletics</h1>
+      <p class="subtitle is-italic has-text-grey">Placeholder text</p>
+    </div>
+  </section>
 
-                <div class="column">
-                  <p class="title is-5 mb-1">
-                    <%= link_to product.name, product %>
-                  </p>
-                  <p class="subtitle is-6">
-                    <em>(<%= link_to product.category.name, product.category %>)</em>
-                  </p>
-                  <p class="mt-2">
-                    Price: $<span class="has-text-weight-semibold"><%= product.price %></span>
-                  </p>
-                  <p class="has-text-weight-semibold mt-2">
-                    In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
-                  </p>
-
-                  <% if cart.include?(product) %>
-                    <%= button_to cart_path(product), method: :delete do %>
-                      Remove from Cart
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <h4 class="title is-4">Products</h4>
+          <div class="ml-5">
+            <% @products.each do |product| %>
+              <div class="box mb-4">
+                <div class="columns is-vcentered">
+                  <div class="column is-one-third">
+                    <% if product.image.attached? %>
+                      <%= image_tag product.image %>
+                    <% else %>
+                      <p class="has-text-grey-light">No image available</p>
                     <% end %>
-                  <% else %>
-                  <%= form_with url: cart_index_path, method: :post do %>
-                    <%= hidden_field_tag :id, product.id %>
-                    <div class="field">
-                      <label class="label">Quantity</label>
-                      <div class="control">
-                        <%= number_field_tag :quantity, 1, min: 1, max: product.stockquantity, class: "input" %>
-                      </div>
-                    </div>
-                    <%= button_tag "Add to Cart", class: "button is-primary" %>
-                  <% end %>
-                  <% end %>
+                  </div>
+
+                  <div class="column">
+                    <p class="title is-5 mb-1">
+                      <%= link_to product.name, product %>
+                    </p>
+                    <p class="subtitle is-6">
+                      <em>(<%= link_to product.category.name, product.category %>)</em>
+                    </p>
+                    <p class="mt-2">
+                      Price: $<span class="has-text-weight-semibold"><%= product.price %></span>
+                    </p>
+                    <p class="has-text-weight-semibold mt-2">
+                      In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
+                    </p>
+
+                    <% if cart.include?(product) %>
+                      <%= button_to cart_path(product), method: :delete do %>
+                        Remove from Cart
+                      <% end %>
+                    <% else %>
+                      <%= form_with url: cart_index_path, method: :post do %>
+                        <%= hidden_field_tag :id, product.id %>
+                        <div class="field">
+                          <label class="label">Quantity</label>
+                          <div class="control">
+                            <%= number_field_tag :quantity, 1, min: 1, max: product.stockquantity, class: "input" %>
+                          </div>
+                        </div>
+                        <%= button_tag "Add to Cart", class: "button is-primary" %>
+                      <% end %>
+                    <% end %>
+                  </div>
                 </div>
               </div>
+            <% end %>
+
+            <div class="mt-4">
+              <%= paginate @products %>
             </div>
-          <% end %>
 
-          <div class="mt-4">
-            <%= paginate @products %>
+            <p class="mt-4">
+              <%= link_to "See the Entire List of Products", products_path %>
+            </p>
           </div>
-
-          <p class="mt-4">
-            <%= link_to "See the Entire List of Products", products_path %>
-          </p>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+</body>
+</html>
