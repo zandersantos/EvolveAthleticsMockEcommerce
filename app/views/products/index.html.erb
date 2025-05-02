@@ -15,57 +15,54 @@
   <body>
     <section class="section">
       <div class="container">
+        <!-- Bulma Flash notifications -->
         <% flash.each do |type, msg| %>
           <% bulma_class = case type.to_sym
-                   when :notice then "is-success"
-                   when :alert then "is-danger"
-                   else "is-info"
-                   end %>
-            <div class="notification <%= bulma_class %>">
-              <%= msg %>
-            </div>
-          <% end %>
+                           when :notice then "is-success"
+                           when :alert then "is-danger"
+                           else "is-info"
+                           end %>
+          <div class="notification <%= bulma_class %>">
+            <%= msg %>
+          </div>
+        <% end %>
 
         <h1 class="title is-2">All Products</h1>
 
         <ol class="ml-5">
-  <% @products.each do |product| %>
-    <li class="mb-5 box">
-      <div class="columns is-vcentered">
-        <div class="column is-one-third">
-          <% if product.image.attached? %>
-            <%= image_tag product.image, class: "image is-128x128" %>
-          <% else %>
-            <p class="has-text-grey-light">No image available</p>
+          <% @products.each do |product| %>
+            <li class="mb-5 box">
+              <div class="columns is-vcentered">
+                <div class="column is-one-third">
+                  <% if product.image.attached? %>
+                    <%= image_tag product.image, class: "image is-128x128" %>
+                  <% else %>
+                    <p class="has-text-grey-light">No image available</p>
+                  <% end %>
+                </div>
+
+                <div class="column">
+                  <p class="title is-5 mb-1">
+                    <%= link_to product.name, product %>
+                  </p>
+                  <p class="subtitle is-6">
+                    <em>(<%= link_to product.category.name, product.category %>)</em>
+                  </p>
+                  <p class="content mb-2 has-text-grey-dark">
+                    <%= product.description %>
+                  </p>
+                  <p class="has-text-weight-semibold mt-2">
+                    In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
+                  </p>
+                </div>
+              </div>
+            </li>
           <% end %>
-        </div>
-
-        <div class="column">
-          <p class="title is-5 mb-1">
-            <%= link_to product.name, product %>
-          </p>
-          <p class="subtitle is-6">
-            <em>(<%= link_to product.category.name, product.category %>)</em>
-          </p>
-          <p class="content mb-2 has-text-grey-dark">
-            <%= product.description %>
-          </p>
-          <p class="has-text-weight-semibold mt-2">
-            In Stock: <span class="has-text-success"><%= product.stockquantity %></span>
-          </p>
-        </div>
-      </div>
-    </li>
-  <% end %>
-</ol>
-
-
+        </ol>
 
         <div class="mt-4">
-            <%= paginate @products %>
-          </div>
-
-
+          <%= paginate @products %>
+        </div>
       </div>
     </section>
   </body>

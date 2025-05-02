@@ -12,8 +12,6 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-
-    <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 
   </head>
@@ -24,12 +22,13 @@
     </div>
     <section class="section mt-0">
       <div class="container">
-        <!-- Product Card -->
+
+        <!-- Display the Products in a "Card" view -->
         <div class="card product-card">
           <% if @product.image.attached? %>
             <div class="card-image">
               <div class="columns is-centered">
-                <div class="column is-half"> <!-- Limits image size to 25% of container -->
+                <div class="column is-half">
                   <figure class="image is-square">
                     <%= image_tag @product.image %>
                   </figure>
@@ -40,7 +39,8 @@
 
           <div class="card-content">
             <div class="content">
-              <!-- Product Information -->
+
+              <!-- Display Product Information -->
               <p>
                 <h2 class="title is-4 mt-6">Name:</h2>
                 <%= @product.name %>
@@ -66,7 +66,7 @@
                 <%= link_to @product.category.name, category_path(@product.category), class: "has-text-link" %>
               </p>
 
-              <!-- Add or Remove from Cart -->
+              <!-- Add or Remove the Product from the Cart -->
               <div class="mt-4">
                 <% if cart.include?(@product) %>
                   <%= button_to cart_path(@product), method: :delete, class: "button is-small is-danger" do %>
